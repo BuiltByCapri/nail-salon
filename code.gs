@@ -63,7 +63,7 @@ function doGet(e) {
   if (action === 'availability') return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services, e.parameter.multiTech);
   if (action === 'book')         return bookAppointment(e.parameter);
   if (action === 'checkin')      return checkInCustomer(e.parameter.phone);
-  if (action === 'waittime')     return getWaitTime();
+  if (action === 'waittime')     return getWaitTime(e.parameter.services);
   if (action === 'debug')        return debugInfo(e.parameter.technician, e.parameter.date);
   return json({ error: 'Unknown action' });
 }
@@ -276,9 +276,10 @@ function checkInCustomer(phone) {
 
 // ── Wait Time ─────────────────────────────────────────────────────────────────
 
-// GET ?action=waittime
+// GET ?action=waittime&services=Pedicure,Manicure
 // Counts appointments with status 'checked in' today; estimates wait.
-function getWaitTime() {
+// Also returns walk-in points preview for the selected services.
+function getWaitTime(services) {
   const today     = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
   const apptSheet = getSheet(APPT_TAB);
   const rows      = apptSheet.getDataRange().getDisplayValues();
@@ -294,6 +295,7 @@ function getWaitTime() {
   return json({
     checkedInCount:        count,
     estimatedWaitMinutes:  count * 30,
+    pointsPreview:         calcWalkInPoints(services || ''),
   });
 }
 
@@ -376,6 +378,29 @@ function calcPoints(servicesStr) {
     if (servicesStr.indexOf(name) !== -1) total += SERVICE_POINTS[name];
   }
   return total > 0 ? total : DEFAULT_POINTS;
+}
+
+// Walk-in points — half of standard values
+const WALKIN_POINTS = {
+  'Pedicure':      5,
+  'Manicure':      5,
+  'Gel Manicure':  8,
+  'Full Set':      5,
+  'Fill-In':       5,
+  'Color Dipping': 8,
+  'Wax':           5,
+  'Polish Change': 5,
+  'Repair':        3,
+  'Other':         5,
+};
+const DEFAULT_WALKIN_POINTS = 5;
+
+function calcWalkInPoints(servicesStr) {
+  let total = 0;
+  for (const name of Object.keys(WALKIN_POINTS)) {
+    if (servicesStr.indexOf(name) !== -1) total += WALKIN_POINTS[name];
+  }
+  return total > 0 ? total : DEFAULT_WALKIN_POINTS;
 }
 
 // Full upsert — awards points (used at check-in)

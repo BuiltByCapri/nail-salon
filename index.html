@@ -494,11 +494,13 @@
     btn.disabled = true; btn.textContent = 'Checking…';
 
     try {
-      const res  = await fetch(`${SCRIPT_URL}?action=waittime`);
+      const params = new URLSearchParams({ action: 'waittime', services });
+      const res  = await fetch(`${SCRIPT_URL}?${params}`);
       const data = await res.json();
 
-      const count   = data.checkedInCount        || 0;
-      const waitMin = data.estimatedWaitMinutes   || 0;
+      const count         = data.checkedInCount      || 0;
+      const waitMin       = data.estimatedWaitMinutes || 0;
+      const pointsPreview = data.pointsPreview        || 0;
 
       let waitMsg;
       if (count === 0) {
@@ -510,7 +512,8 @@
       const techLine = walkinTech === 'Any Tech' ? '' : ` with <strong>${walkinTech}</strong>`;
       document.getElementById('walkin-confirm-body').innerHTML =
         `Let the front desk know you're here for <strong>${services}</strong>${techLine}.<br><br>
-         <span style="font-size:1rem; color:var(--accent); font-family:'Cormorant Garamond',serif; font-style:italic;">${waitMsg}</span>`;
+         <span style="font-size:1rem; color:var(--accent); font-family:'Cormorant Garamond',serif; font-style:italic;">${waitMsg}</span><br><br>
+         You earned <strong>${pointsPreview} points</strong> today! Book your next appointment in advance to earn double points.`;
 
       hide('step-walkin'); show('step-walkin-confirm');
 

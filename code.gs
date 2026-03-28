@@ -7,7 +7,7 @@
 // Deploy: Extensions → Apps Script → Deploy → Manage deployments → new version
 //   Execute as: Me | Who has access: Anyone
 
-const SHEET_ID   = '1Hh5E7bdDYOylfBzAe9KTbRmqIxuY2F7q-9z0YvE0lw0';
+const SHEET_ID   = '1WnatJY-KwF-e0bW1i1wK61KNWfqN4hqGb3eObT8ONjQ';
 const SHEET_NAME = 'Sheet1';
 
 // ── Entry points ─────────────────────────────────────────────────────────────

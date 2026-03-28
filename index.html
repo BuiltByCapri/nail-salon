@@ -726,19 +726,10 @@
       document.getElementById('confirm-summary').innerHTML = summary;
 
       // Rewards on confirmation
-      if (lastRewards) {
-        const rewardsEl = document.getElementById('confirm-rewards');
-        const pct = Math.min(100, Math.round((lastRewards.totalPoints / FREE_PEDICURE_PTS) * 100));
-        let rhtml = `<strong>+${lastRewards.pointsEarned} points earned today!</strong><br>`;
-        rhtml += `You now have <strong>${lastRewards.totalPoints} points</strong>.<br>`;
-        if (lastRewards.freeReward) {
-          rhtml += `🎉 <strong>You've earned a free pedicure!</strong> Mention this at your next visit.`;
-        } else {
-          rhtml += `${lastRewards.pointsToFree} more points until a free pedicure.`;
-          rhtml += `<div class="rewards-progress" style="margin-top:0.5rem;"><div class="rewards-progress-fill" style="width:${pct}%"></div></div>`;
-        }
-        rewardsEl.innerHTML = rhtml;
-        rewardsEl.style.display = 'block';
+      if (lastRewards && lastRewards.pointsPreview) {
+       const rewardsEl = document.getElementById('confirm-rewards');
+       rewardsEl.innerHTML = `<strong>${lastRewards.pointsPreview} points will be added to your account at check-in.</strong><br>Check in at the front desk when you arrive and your points will be waiting.`;
+       rewardsEl.style.display = 'block';
       }
 
       hide('step-booking'); show('step-confirm');

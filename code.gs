@@ -63,6 +63,7 @@ function doGet(e) {
   if (action === 'availability') return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services, e.parameter.multiTech);
   if (action === 'book')         return bookAppointment(e.parameter);
   if (action === 'checkin')      return checkInCustomer(e.parameter.phone);
+  if (action === 'waittime')     return getWaitTime();
   if (action === 'debug')        return debugInfo(e.parameter.technician, e.parameter.date);
   return json({ error: 'Unknown action' });
 }
@@ -271,6 +272,29 @@ function checkInCustomer(phone) {
   }
 
   return json({ found: false });
+}
+
+// ── Wait Time ─────────────────────────────────────────────────────────────────
+
+// GET ?action=waittime
+// Counts appointments with status 'checked in' today; estimates wait.
+function getWaitTime() {
+  const today     = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  const apptSheet = getSheet(APPT_TAB);
+  const rows      = apptSheet.getDataRange().getDisplayValues();
+  let count = 0;
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][3]).trim() === today &&
+        String(rows[i][10] || '').trim().toLowerCase() === 'checked in') {
+      count++;
+    }
+  }
+
+  return json({
+    checkedInCount:        count,
+    estimatedWaitMinutes:  count * 30,
+  });
 }
 
 // ── Time blocking ─────────────────────────────────────────────────────────────

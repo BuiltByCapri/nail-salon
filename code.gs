@@ -17,7 +17,7 @@ const SHEET_ID        = '1WnatJY-KwF-e0bW1i1wK61KNWfqN4hqGb3eObT8ONjQ';
 const SHEET_NAME      = 'Sheet1';
 const SALON_NAME      = 'Salon Name';
 const SALON_PHONE     = '(XXX) XXX-XXXX';
-const CARRIER_GATEWAY = '<>@comcastpcs.textmsg.com'; // Change per carrier: 
+const CARRIER_GATEWAY = '<>number@txt.att.net'; // Change per carrier: 
 // AT&T:      @txt.att.net
 // T-Mobile:  @tmomail.net
 // Verizon:   @vtext.com

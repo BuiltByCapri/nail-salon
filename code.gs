@@ -41,7 +41,7 @@ function lookupPhone(phone) {
   return json({ found: false });
 }
 
-// GET ?action=availability&technician=Hannah%2C%20Jessica&date=2026-04-01&services=Pedicure+45min
+// GET ?action=availability&technician=Tech%2C%20Tech&date=2026-04-01&services=Pedicure+45min
 // Returns { unavailableSlots: [...] } — start times where the new booking
 // (given its duration) would overlap any existing booking.
 // When multiple techs selected, a slot is only blocked if ALL are unavailable.
@@ -249,7 +249,7 @@ function json(obj) {
 }
 
 // ── Debug endpoint ────────────────────────────────────────────────────────────
-// GET ?action=debug&technician=Bae&date=2026-03-30
+// GET ?action=debug&technician=Tech&date=2026-03-30
 function debugInfo(technician, date) {
   const rows = getRows();
   const rowsData = rows.map(function(r) {

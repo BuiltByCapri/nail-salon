@@ -1,0 +1,1113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> Nails &amp; Spa · Houston</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #fdf0ec;
+      --text:      #8a5a42;
+      --accent:    #b87a5a;
+      --accent-lt: #c9956a;
+      --floral:    #f2bfb5;
+      --card-bg:   #fff9f7;
+      --border:    #e8c9bc;
+      --white:     #ffffff;
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      background: var(--bg);
+      text-align: center;
+      padding: 2.5rem 1.5rem 2rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .header-logo {
+      height: 90px;
+      width: auto;
+      margin: 0 auto 0.5rem;
+      display: block;
+    }
+    .header-brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(2.8rem, 7vw, 4.2rem);
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: 0.01em;
+    }
+    .header-subtitle {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-top: 0.3rem;
+    }
+    .header-sep {
+      color: var(--floral);
+      font-size: 0.65rem;
+      margin: 0.6rem 0;
+      letter-spacing: 0.5em;
+    }
+    .header-info {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.82rem;
+      color: var(--accent-lt);
+      letter-spacing: 0.04em;
+      line-height: 1.9;
+    }
+    .header-info a {
+      color: var(--accent-lt);
+      text-decoration: none;
+    }
+    .header-info a:hover { text-decoration: underline; }
+
+    /* ─── MAIN ─── */
+    main {
+      flex: 1;
+      padding: 2.5rem 1.5rem 3rem;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      display: block;
+      background: var(--card-bg);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem 2rem;
+      box-sizing: border-box;
+    }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.7rem;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+    .card-sub {
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--accent-lt);
+      margin-bottom: 1.8rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── INPUTS ─── */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 1.1rem;
+    }
+    label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    input[type="text"],
+    input[type="tel"],
+    input[type="date"],
+    textarea {
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    input[type="date"]:focus,
+    textarea:focus {
+      border-color: var(--accent);
+    }
+    input::placeholder { color: #c9b0a4; }
+
+    /* ─── 2-COL GRID ─── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ─── NOTICE ─── */
+    .notice {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--accent-lt);
+      margin: 0.8rem auto 0;
+      padding: 0.6rem 0.9rem;
+      background: #fde8df;
+      border-radius: 8px;
+      border: 0.5px solid var(--border);
+      max-width: 600px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ─── SERVICE PILLS ─── */
+    .pills-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.1rem;
+    }
+    .pill {
+      padding: 0.42rem 1rem;
+      border-radius: 20px;
+      border: 0.5px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 400;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .pill:hover { border-color: var(--accent-lt); }
+    .pill.selected {
+      background: var(--accent);
+      color: #fff9f7;
+      border-color: var(--accent);
+    }
+    .pill-duration {
+      font-size: 0.72rem;
+      font-weight: 300;
+      opacity: 0.8;
+    }
+    .other-input-wrap {
+      display: none;
+      margin-bottom: 1.1rem;
+    }
+    .other-input-wrap.visible { display: block; }
+
+    /* ─── CUSTOM DROPDOWN (shared) ─── */
+    .custom-dropdown {
+      position: relative;
+      margin-bottom: 1.1rem;
+    }
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      background: var(--white);
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--text);
+      user-select: none;
+      transition: border-color 0.2s;
+    }
+    .dropdown-trigger.open { border-color: var(--accent); }
+    .dropdown-trigger .placeholder { color: #c9b0a4; }
+    .dropdown-caret {
+      font-size: 0.65rem;
+      color: var(--accent-lt);
+      transition: transform 0.2s;
+      margin-left: 0.5rem;
+      flex-shrink: 0;
+    }
+    .dropdown-trigger.open .dropdown-caret { transform: rotate(180deg); }
+    .dropdown-list {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      z-index: 50;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: 0 4px 16px rgba(138, 90, 66, 0.08);
+    }
+    .dropdown-list.open { display: block; }
+    .dropdown-option {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--text);
+      transition: background 0.12s;
+    }
+    .dropdown-option:hover { background: var(--bg); }
+    .dropdown-option.selected-opt { color: var(--accent); font-weight: 400; }
+
+    /* checkboxes inside multi-select */
+    .opt-check {
+      width: 14px;
+      height: 14px;
+      border: 0.5px solid var(--border);
+      border-radius: 3px;
+      background: var(--white);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .dropdown-option.selected-opt .opt-check {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .opt-check::after {
+      content: '';
+      display: none;
+      width: 5px;
+      height: 3px;
+      border-left: 1.5px solid #fff9f7;
+      border-bottom: 1.5px solid #fff9f7;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .dropdown-option.selected-opt .opt-check::after { display: block; }
+
+    /* single-select time: no checkbox, highlight row */
+    .dropdown-option.time-opt.selected-opt {
+      background: #fde8df;
+      font-weight: 500;
+    }
+
+    /* ─── APPOINTMENT BLOCK ─── */
+    .appt-block + .appt-block {
+      margin-top: 1.8rem;
+      padding-top: 1.8rem;
+      border-top: 0.5px solid var(--border);
+    }
+    .appt-block-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--accent-lt);
+      margin-bottom: 1rem;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+      margin-top: 1.8rem;
+    }
+    .btn {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      border-radius: 24px;
+      padding: 0.65rem 1.6rem;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s, transform 0.1s;
+      text-transform: uppercase;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff9f7;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 0.5px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); }
+    .btn-cancel {
+      background: transparent;
+      color: var(--accent-lt);
+      border: 0.5px solid var(--border);
+    }
+    .btn-cancel:hover { border-color: var(--accent-lt); }
+    .btn-continue {
+      width: 100%;
+      background: var(--accent);
+      color: #fff9f7;
+      margin-top: 0.5rem;
+      padding: 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    /* ─── BOOKED TIME SLOT ─── */
+    .dropdown-option.time-opt.booked {
+      color: #cbb8b0;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .dropdown-option.time-opt.booked::after {
+      content: ' · taken';
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    /* ─── ERROR BANNER ─── */
+    .error-banner {
+      display: none;
+      background: #fde8df;
+      border: 0.5px solid #d4917a;
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: #7a3a25;
+      margin-bottom: 1.2rem;
+    }
+    .error-banner.visible { display: block; }
+
+    /* ─── INLINE LOADING STATE ─── */
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* ─── STEPS ─── */
+    #step-phone   { display: block; }
+    #step-booking { display: none; }
+    #step-confirm { display: none; }
+
+    .booking-meta {
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto 0.2rem;
+      padding: 0 0.2rem;
+    }
+    .booking-meta .card-title { margin-bottom: 0.2rem; }
+    .booking-meta .card-sub   { margin-bottom: 0; }
+
+    /* ─── CONFIRMATION ─── */
+    .confirm-star {
+      font-size: 1rem;
+      color: var(--floral);
+      letter-spacing: 0.4em;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+    .confirm-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+    }
+    .confirm-summary {
+      font-size: 0.88rem;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--text);
+    }
+    .confirm-summary strong {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.76rem;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      border-top: 0.5px solid var(--border);
+    }
+
+    /* nested dropdown loses its own bottom margin — form-group provides it */
+    .form-group .custom-dropdown { margin-bottom: 0; }
+
+    @media (max-width: 520px) {
+      .card { padding: 1.8rem 1.2rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .btn-row { flex-direction: column; }
+      .btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <img src="logo.jpg" alt="logo &amp; Spa" class="header-logo" onerror="this.style.display='none'" />
+  <div class="header-brand-name"></div>
+  <div class="header-subtitle">Nails &amp; Spa</div>
+  <div class="header-sep">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <div class="header-info">
+   Address &nbsp;✦&nbsp; Houston, TX 77027<br>
+    <a href="tel:+17136226245">(123) 456-7785</a>
+  </div>
+</header>
+
+<!-- ─── MAIN ─── -->
+<main>
+
+  <!-- STEP 1: PHONE GATE -->
+  <div id="step-phone">
+    <div class="card">
+      <div class="card-title">Welcome</div>
+      <div class="card-sub">Enter your phone number to get started</div>
+      <div class="form-group">
+        <label for="phone-input">Phone Number</label>
+        <input type="tel" id="phone-input" placeholder="(713) 555-0000" maxlength="14" />
+      </div>
+      <button class="btn btn-continue" onclick="handlePhoneContinue()">Continue</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: BOOKING FORM -->
+  <div id="step-booking">
+    <!-- Title, sub, notice live ABOVE the card -->
+    <div class="booking-meta">
+      <div class="card-title" id="booking-title">Book your visit</div>
+      <div class="card-sub"> Nails &amp; Spa · Houston</div>
+    </div>
+    <div class="notice">
+      Please note: appointments require at least 24 hours advance notice. Same-day requests may be accommodated based on availability — feel free to call us.
+    </div>
+
+    <div class="card">
+      <!-- Name: 2-col grid for first + last only -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" placeholder="Jane" />
+        </div>
+        <div class="form-group">
+          <label for="last-name">Last Name</label>
+          <input type="text" id="last-name" placeholder="Doe" />
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="form-group">
+        <label for="appt-date">Preferred Date</label>
+        <input type="date" id="appt-date" />
+      </div>
+
+      <!-- Appointment blocks container -->
+      <div id="appt-blocks-container">
+        <div class="appt-block" id="appt-block-1" data-index="1">
+          <!-- Services -->
+          <div class="pills-label">Services</div>
+          <div class="pills" id="pills-1">
+            <span class="pill" data-service="Pedicure"      data-dur="45min" onclick="togglePill(this,1)">Pedicure <span class="pill-duration">45min</span></span>
+            <span class="pill" data-service="Manicure"      data-dur="30min" onclick="togglePill(this,1)">Manicure <span class="pill-duration">30min</span></span>
+            <span class="pill" data-service="Gel Manicure"  data-dur="30min" onclick="togglePill(this,1)">Gel Manicure <span class="pill-duration">30min</span></span>
+            <span class="pill" data-service="Full Set"      data-dur="45min" onclick="togglePill(this,1)">Full Set <span class="pill-duration">45min</span></span>
+            <span class="pill" data-service="Fill-In"       data-dur="45min" onclick="togglePill(this,1)">Fill-In <span class="pill-duration">45min</span></span>
+            <span class="pill" data-service="Color Dipping" data-dur="45min" onclick="togglePill(this,1)">Color Dipping <span class="pill-duration">45min</span></span>
+            <span class="pill" data-service="Wax"           data-dur="15min" onclick="togglePill(this,1)">Wax <span class="pill-duration">15min</span></span>
+            <span class="pill" data-service="Polish Change" data-dur="15min" onclick="togglePill(this,1)">Polish Change <span class="pill-duration">15min</span></span>
+            <span class="pill" data-service="Repair"        data-dur="15min" onclick="togglePill(this,1)">Repair <span class="pill-duration">15min</span></span>
+            <span class="pill" data-service="Other"         data-dur="15min" onclick="togglePill(this,1)">Other <span class="pill-duration">15min</span></span>
+          </div>
+          <div class="other-input-wrap" id="other-wrap-1">
+            <div class="form-group">
+              <input type="text" id="other-text-1" placeholder="Describe your service request…" />
+            </div>
+          </div>
+
+          <!-- Technician multi-select -->
+          <div class="form-group">
+            <label>Technician</label>
+            <div class="custom-dropdown" id="tech-dropdown-1">
+              <div class="dropdown-trigger" onclick="toggleDropdown('tech-dropdown-1')">
+                <span class="placeholder" id="tech-display-1">Any Tech</span>
+                <span class="dropdown-caret">▼</span>
+              </div>
+              <div class="dropdown-list" id="tech-list-1">
+                <div class="dropdown-option selected-opt" data-value="Any Tech" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Any Tech</div>
+                <div class="dropdown-option" data-value="Bae"     onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 1</div>
+                <div class="dropdown-option" data-value="Hannah"  onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 2</div>
+                <div class="dropdown-option" data-value="Jessica" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 3</div>
+                <div class="dropdown-option" data-value="Kim"     onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 4</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Time single-select -->
+          <div class="form-group">
+            <label>Preferred Time</label>
+            <div class="custom-dropdown" id="time-dropdown-1">
+              <div class="dropdown-trigger" onclick="toggleDropdown('time-dropdown-1')">
+                <span class="placeholder" id="time-display-1">Select a time…</span>
+                <span class="dropdown-caret">▼</span>
+              </div>
+              <div class="dropdown-list" id="time-list-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generic error (network failure etc.) -->
+      <div class="error-banner" id="booking-error"></div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button class="btn btn-ghost"   onclick="addAppointment()">+ Add another appointment</button>
+        <button class="btn btn-cancel"  onclick="cancelBooking()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitBooking()">Book Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: CONFIRMATION -->
+  <div id="step-confirm">
+    <div class="card" style="text-align:center; padding: 3rem 2rem;">
+      <span class="confirm-star">✦ &nbsp; ✦ &nbsp; ✦</span>
+      <div class="confirm-title">Your appointment is confirmed ✦</div>
+      <div class="confirm-summary" id="confirm-summary"></div>
+      <div class="btn-row" style="justify-content:center; margin-top:2rem;">
+        <button class="btn btn-ghost" onclick="bookAnother()">Book another visit</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer>© 2026 Nails &amp; Spa &nbsp;·&nbsp; Houston, TX</footer>
+
+<script>
+  // ── Config ──
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaQvPn4xRqNrTIwN53QDHwYL0Dkm0aYEIuJfnLXfTn-LAesoP4euY10jX2typEEIfO/exec';
+
+  // ── State ──
+  let apptCount     = 1;
+  let currentPhone  = '';
+  const techSelections  = { 1: ['Any Tech'] };
+  const timeSelections  = { 1: null };
+  const unavailableSlots = { 1: new Set() };
+
+  // ── Phone formatting ──
+  document.getElementById('phone-input').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '').slice(0, 10);
+    if (v.length >= 7)      v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
+    else if (v.length >= 4) v = '(' + v.slice(0,3) + ') ' + v.slice(3);
+    else if (v.length >= 1) v = '(' + v;
+    this.value = v;
+  });
+
+  // ── Step 1: phone gate ──
+  async function handlePhoneContinue() {
+    const raw = document.getElementById('phone-input').value.replace(/\D/g, '');
+    currentPhone = raw;
+
+    const btn = document.querySelector('#step-phone .btn-continue');
+    btn.disabled = true;
+    btn.textContent = 'Looking up…';
+
+    try {
+      const res  = await fetch(`${SCRIPT_URL}?action=lookup&phone=${encodeURIComponent(raw)}`);
+      const data = await res.json();
+      if (data.found) {
+        document.getElementById('first-name').value = data.firstName;
+        document.getElementById('last-name').value  = data.lastName;
+        document.getElementById('booking-title').textContent = 'Welcome back, ' + data.firstName;
+      } else {
+        document.getElementById('first-name').value = '';
+        document.getElementById('last-name').value  = '';
+        document.getElementById('booking-title').textContent = 'Welcome';
+      }
+    } catch (_) {
+      document.getElementById('first-name').value = '';
+      document.getElementById('last-name').value  = '';
+      document.getElementById('booking-title').textContent = 'Welcome';
+    }
+
+    btn.disabled    = false;
+    btn.textContent = 'Continue';
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('appt-date').min = tomorrow.toISOString().split('T')[0];
+
+    show('step-booking');
+    hide('step-phone');
+  }
+
+  // ── Service pills ──
+  function togglePill(el, idx) {
+    el.classList.toggle('selected');
+    const wrap = document.getElementById('other-wrap-' + idx);
+    const hasOther = !!document.querySelector('#pills-' + idx + ' .pill[data-service="Other"].selected');
+    if (wrap) wrap.classList.toggle('visible', hasOther);
+    // Re-check availability since duration affects which start times are open.
+    triggerAvailabilityCheck(idx);
+  }
+
+  // ── Availability checking ──
+  function getSelectedServices(idx) {
+    const block = document.getElementById('appt-block-' + idx);
+    if (!block) return '';
+    return [...block.querySelectorAll('.pill.selected')].map(p => {
+      const svc = p.dataset.service;
+      if (svc === 'Other') {
+        const desc = document.getElementById('other-text-' + idx)?.value.trim();
+        return desc ? `Other (${desc}) ${p.dataset.dur}` : `Other ${p.dataset.dur}`;
+      }
+      return `${svc} ${p.dataset.dur}`;
+    }).join(', ');
+  }
+
+  async function fetchAvailability(technician, date, idx) {
+    idx = idx || 1;
+    if (!technician || !date) return;
+    const services = getSelectedServices(idx);
+    try {
+      const params = new URLSearchParams({ action: 'availability', technician, date });
+      if (services) params.set('services', services);
+      const res  = await fetch(`${SCRIPT_URL}?${params}`);
+      const data = await res.json();
+      unavailableSlots[idx] = new Set(data.unavailableSlots || []);
+      rebuildTimeList(idx);
+    } catch (_) { /* silently skip if offline */ }
+  }
+
+  // Clear and re-render the time list, excluding unavailable slots entirely.
+  function rebuildTimeList(idx) {
+    const listEl = document.getElementById('time-list-' + idx);
+    if (!listEl) return;
+    // If the currently selected time became unavailable, clear it
+    if (timeSelections[idx] && unavailableSlots[idx].has(timeSelections[idx])) {
+      timeSelections[idx] = null;
+      const disp = document.getElementById('time-display-' + idx);
+      if (disp) { disp.textContent = 'Select a time…'; disp.classList.add('placeholder'); }
+    }
+    listEl.innerHTML = '';
+    delete listEl.dataset.built;
+    buildTimeList(idx);
+  }
+
+  function triggerAvailabilityCheck(idx) {
+    idx = idx || 1;
+    const date  = document.getElementById('appt-date').value;
+    const techs = techSelections[idx] || ['Any Tech'];
+    if (date) fetchAvailability(techs.join(', '), date, idx);
+  }
+
+  // Wire date change
+  document.getElementById('appt-date').addEventListener('change', triggerAvailabilityCheck);
+
+  // ── Dropdown open/close ──
+  function toggleDropdown(id) {
+    const dd = document.getElementById(id);
+    const trigger = dd.querySelector('.dropdown-trigger');
+    const list    = dd.querySelector('.dropdown-list');
+    const isOpen  = list.classList.contains('open');
+    // Close all dropdowns
+    document.querySelectorAll('.dropdown-list.open').forEach(l => {
+      l.classList.remove('open');
+      l.closest('.custom-dropdown').querySelector('.dropdown-trigger').classList.remove('open');
+    });
+    if (!isOpen) {
+      list.classList.add('open');
+      trigger.classList.add('open');
+    }
+  }
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.custom-dropdown')) {
+      document.querySelectorAll('.dropdown-list.open').forEach(l => {
+        l.classList.remove('open');
+        l.closest('.custom-dropdown').querySelector('.dropdown-trigger').classList.remove('open');
+      });
+    }
+  });
+
+  // ── Technician multi-select ──
+  function toggleTech(optEl, ddId) {
+    const dd  = document.getElementById(ddId);
+    const idx = parseInt(ddId.replace('tech-dropdown-', ''));
+    const val = optEl.dataset.value;
+    let sel   = techSelections[idx] || [];
+
+    if (val === 'Any Tech') {
+      // Toggle Any Tech: deselect all specific
+      if (optEl.classList.contains('selected-opt')) {
+        optEl.classList.remove('selected-opt');
+        sel = [];
+      } else {
+        dd.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('selected-opt'));
+        optEl.classList.add('selected-opt');
+        sel = ['Any Tech'];
+      }
+    } else {
+      // Deselect "Any Tech" if a specific is chosen
+      const anyOpt = dd.querySelector('[data-value="Any Tech"]');
+      anyOpt.classList.remove('selected-opt');
+      sel = sel.filter(s => s !== 'Any Tech');
+
+      if (optEl.classList.contains('selected-opt')) {
+        optEl.classList.remove('selected-opt');
+        sel = sel.filter(s => s !== val);
+      } else {
+        optEl.classList.add('selected-opt');
+        sel.push(val);
+      }
+
+      // If nothing selected, fall back to Any Tech
+      if (sel.length === 0) {
+        anyOpt.classList.add('selected-opt');
+        sel = ['Any Tech'];
+      }
+    }
+
+    techSelections[idx] = sel;
+    const display = document.getElementById('tech-display-' + idx);
+    display.textContent = sel.join(', ');
+    display.classList.toggle('placeholder', false);
+
+    if (idx === 1) triggerAvailabilityCheck();
+  }
+
+  // ── Time single-select ──
+  function buildTimeList(idx) {
+    const listEl = document.getElementById('time-list-' + idx);
+    if (!listEl || listEl.dataset.built) return;
+    listEl.dataset.built = '1';
+
+    const blocked = unavailableSlots[idx] || new Set();
+
+    for (let h = 9; h <= 21; h++) {
+      for (let m = 0; m < 60; m += 15) {
+        if (h === 21 && m > 0) break;
+        const ampm = h < 12 ? 'AM' : 'PM';
+        const hour = h % 12 === 0 ? 12 : h % 12;
+        const min  = m === 0 ? '00' : m;
+        const t    = `${hour}:${min} ${ampm}`;
+        if (blocked.has(t)) continue; // omit unavailable slots entirely
+        const opt = document.createElement('div');
+        opt.className = 'dropdown-option time-opt';
+        opt.textContent = t;
+        opt.dataset.value = t;
+        opt.addEventListener('click', function () { selectTime(this, idx); });
+        listEl.appendChild(opt);
+      }
+    }
+  }
+
+  function selectTime(optEl, idx) {
+    const listEl = document.getElementById('time-list-' + idx);
+    listEl.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected-opt'));
+    optEl.classList.add('selected-opt');
+    timeSelections[idx] = optEl.dataset.value;
+
+    const display = document.getElementById('time-display-' + idx);
+    display.textContent = optEl.dataset.value;
+    display.classList.remove('placeholder');
+
+    // Close dropdown
+    const dd = document.getElementById('time-dropdown-' + idx);
+    dd.querySelector('.dropdown-list').classList.remove('open');
+    dd.querySelector('.dropdown-trigger').classList.remove('open');
+  }
+
+  // ── Add appointment ──
+  function addAppointment() {
+    apptCount++;
+    const idx = apptCount;
+    techSelections[idx] = ['Any Tech'];
+    timeSelections[idx] = null;
+
+    const block = document.createElement('div');
+    block.className = 'appt-block';
+    block.id = 'appt-block-' + idx;
+    block.dataset.index = idx;
+    block.innerHTML = `
+      <div class="appt-block-label">Appointment ${idx}</div>
+
+      <div class="pills-label">Services</div>
+      <div class="pills" id="pills-${idx}">
+        <span class="pill" data-service="Pedicure"      data-dur="45min" onclick="togglePill(this,${idx})">Pedicure <span class="pill-duration">45min</span></span>
+        <span class="pill" data-service="Manicure"      data-dur="30min" onclick="togglePill(this,${idx})">Manicure <span class="pill-duration">30min</span></span>
+        <span class="pill" data-service="Gel Manicure"  data-dur="30min" onclick="togglePill(this,${idx})">Gel Manicure <span class="pill-duration">30min</span></span>
+        <span class="pill" data-service="Full Set"      data-dur="45min" onclick="togglePill(this,${idx})">Full Set <span class="pill-duration">45min</span></span>
+        <span class="pill" data-service="Fill-In"       data-dur="45min" onclick="togglePill(this,${idx})">Fill-In <span class="pill-duration">45min</span></span>
+        <span class="pill" data-service="Color Dipping" data-dur="45min" onclick="togglePill(this,${idx})">Color Dipping <span class="pill-duration">45min</span></span>
+        <span class="pill" data-service="Wax"           data-dur="15min" onclick="togglePill(this,${idx})">Wax <span class="pill-duration">15min</span></span>
+        <span class="pill" data-service="Polish Change" data-dur="15min" onclick="togglePill(this,${idx})">Polish Change <span class="pill-duration">15min</span></span>
+        <span class="pill" data-service="Repair"        data-dur="15min" onclick="togglePill(this,${idx})">Repair <span class="pill-duration">15min</span></span>
+        <span class="pill" data-service="Other"         data-dur="15min" onclick="togglePill(this,${idx})">Other <span class="pill-duration">15min</span></span>
+      </div>
+      <div class="other-input-wrap" id="other-wrap-${idx}">
+        <div class="form-group">
+          <input type="text" id="other-text-${idx}" placeholder="Describe your service request…" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Technician</label>
+        <div class="custom-dropdown" id="tech-dropdown-${idx}">
+          <div class="dropdown-trigger" onclick="toggleDropdown('tech-dropdown-${idx}')">
+            <span id="tech-display-${idx}">Any Tech</span>
+            <span class="dropdown-caret">▼</span>
+          </div>
+          <div class="dropdown-list" id="tech-list-${idx}">
+            <div class="dropdown-option selected-opt" data-value="Any Tech"  onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Any Tech</div>
+            <div class="dropdown-option"              data-value="Bae"       onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Bae</div>
+            <div class="dropdown-option"              data-value="Hannah"    onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Hannah</div>
+            <div class="dropdown-option"              data-value="Jessica"   onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Jessica</div>
+            <div class="dropdown-option"              data-value="Kim"       onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Kim</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Preferred Time</label>
+        <div class="custom-dropdown" id="time-dropdown-${idx}">
+          <div class="dropdown-trigger" onclick="toggleDropdown('time-dropdown-${idx}'); buildTimeList(${idx})">
+            <span class="placeholder" id="time-display-${idx}">Select a time…</span>
+            <span class="dropdown-caret">▼</span>
+          </div>
+          <div class="dropdown-list" id="time-list-${idx}"></div>
+        </div>
+      </div>
+    `;
+    document.getElementById('appt-blocks-container').appendChild(block);
+
+    // First appt label (retroactively)
+    if (apptCount === 2) {
+      const first = document.getElementById('appt-block-1');
+      if (!first.querySelector('.appt-block-label')) {
+        const lbl = document.createElement('div');
+        lbl.className = 'appt-block-label';
+        lbl.textContent = 'Appointment 1';
+        first.prepend(lbl);
+      }
+    }
+  }
+
+  // ── Cancel ──
+  function cancelBooking() {
+    clearError();
+    show('step-phone');
+    hide('step-booking');
+    resetForm();
+  }
+
+  function clearError() {
+    const b = document.getElementById('booking-error');
+    if (b) { b.textContent = ''; b.classList.remove('visible'); }
+  }
+
+  // ── Submit ──
+  async function submitBooking() {
+    const firstName = document.getElementById('first-name').value.trim();
+    const lastName  = document.getElementById('last-name').value.trim();
+    const date      = document.getElementById('appt-date').value;
+
+    const banner = document.getElementById('booking-error');
+    banner.textContent = '';
+    banner.classList.remove('visible');
+
+    const appointments = [];
+    for (let i = 1; i <= apptCount; i++) {
+      const block = document.getElementById('appt-block-' + i);
+      if (!block) continue;
+      const services = [...block.querySelectorAll('.pill.selected')].map(p => {
+        const svc = p.dataset.service;
+        if (svc === 'Other') {
+          const desc = document.getElementById('other-text-' + i)?.value.trim();
+          return desc ? `Other (${desc})` : 'Other';
+        }
+        return `${svc} ${p.dataset.dur}`;
+      });
+      const techs = techSelections[i] || ['Any Tech'];
+      appointments.push({
+        services,
+        technician: techs.join(', '),
+        time: timeSelections[i] || '',
+      });
+    }
+
+    const bookBtn = document.querySelector('.btn-primary');
+    bookBtn.disabled    = true;
+    bookBtn.textContent = 'Booking…';
+
+    try {
+      for (let ai = 0; ai < appointments.length; ai++) {
+        const appt = appointments[ai];
+        const params = new URLSearchParams({
+          action:     'book',
+          phone:      currentPhone,
+          firstName,
+          lastName,
+          date,
+          technician: appt.technician,
+          time:       appt.time,
+          services:   appt.services.join(', '),
+        });
+        const res  = await fetch(`${SCRIPT_URL}?${params}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (!data.success) {
+          if (data.partialConflict) {
+            // Some techs in this selection are booked, others are free.
+            const booked = data.bookedTechs.join(' and ');
+            const free   = data.freeTechs.join(' and ');
+            let msg = `${booked} ${data.bookedTechs.length === 1 ? 'is' : 'are'} unavailable at ${appt.time}.`;
+            msg += ` ${free} can see you at that time.`;
+            if (data.nextAvailable) {
+              msg += ` Please choose another technician or update your time to ${data.nextAvailable}.`;
+            } else {
+              msg += ` Please choose another technician or a different time.`;
+            }
+            banner.textContent = msg;
+            banner.classList.add('visible');
+            bookBtn.disabled    = false;
+            bookBtn.textContent = 'Book Now';
+            return;
+          }
+          if (data.conflict) {
+            // All selected techs are booked — look at other appointments in this booking.
+            const otherTechs = appointments
+              .filter((_, j) => j !== ai)
+              .map(a => a.technician)
+              .filter(t => t && t !== appt.technician);
+            let msg = `${appt.technician} is unavailable at ${appt.time}.`;
+            if (otherTechs.length > 0) {
+              msg += ` ${otherTechs.join(' and ')} can see you at that time.`;
+            }
+            if (data.nextAvailable) {
+              msg += ` Please choose another technician or update your time to ${data.nextAvailable}.`;
+            } else {
+              msg += ` Please choose another technician or a different time.`;
+            }
+            banner.textContent = msg;
+            banner.classList.add('visible');
+            bookBtn.disabled    = false;
+            bookBtn.textContent = 'Book Now';
+            return;
+          }
+          throw new Error(data.error || 'Booking failed — please try another time.');
+        }
+      }
+
+      let summary = `<strong>${firstName} ${lastName}</strong><br>${formatDate(date)}<br><br>`;
+      appointments.forEach((a, i) => {
+        if (appointments.length > 1) summary += `<strong>Appointment ${i + 1}</strong><br>`;
+        summary += `${a.services.length ? a.services.join(', ') : '—'}<br>`;
+        summary += `With: ${a.technician}<br>`;
+        summary += `Time: ${a.time || 'Not specified'}`;
+        if (i < appointments.length - 1) summary += '<br><br>';
+      });
+      document.getElementById('confirm-summary').innerHTML = summary;
+      hide('step-booking');
+      show('step-confirm');
+    } catch (err) {
+      banner.textContent = err.message && !err.message.startsWith('HTTP')
+        ? err.message
+        : 'Something went wrong — please try again or call us at (713) 622-6245.';
+      banner.classList.add('visible');
+      bookBtn.disabled    = false;
+      bookBtn.textContent = 'Book Now';
+    }
+  }
+
+  function bookAnother() {
+    hide('step-confirm');
+    resetForm();
+    show('step-phone');
+  }
+
+  // ── Helpers ──
+  function show(id) { document.getElementById(id).style.display = 'block'; }
+  function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+  function formatDate(str) {
+    if (!str) return 'Date not set';
+    const [y, m, d] = str.split('-');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${months[parseInt(m,10)-1]} ${parseInt(d,10)}, ${y}`;
+  }
+
+  function resetForm() {
+    apptCount = 1;
+    Object.keys(techSelections).forEach(k => delete techSelections[k]);
+    Object.keys(timeSelections).forEach(k => delete timeSelections[k]);
+    Object.keys(unavailableSlots).forEach(k => delete unavailableSlots[k]);
+    techSelections[1]  = ['Any Tech'];
+    timeSelections[1]  = null;
+    unavailableSlots[1] = new Set();
+
+    document.getElementById('phone-input').value   = '';
+    document.getElementById('first-name').value    = '';
+    document.getElementById('last-name').value     = '';
+    document.getElementById('appt-date').value     = '';
+
+    // Remove extra appt blocks
+    const container = document.getElementById('appt-blocks-container');
+    [...container.querySelectorAll('.appt-block')].slice(1).forEach(b => b.remove());
+    // Remove injected label from first block
+    const firstLabel = document.querySelector('#appt-block-1 .appt-block-label');
+    if (firstLabel) firstLabel.remove();
+
+    // Reset pills
+    document.querySelectorAll('#pills-1 .pill.selected').forEach(p => p.classList.remove('selected'));
+    const ow = document.getElementById('other-wrap-1');
+    if (ow) ow.classList.remove('visible');
+
+    // Reset tech display
+    document.querySelectorAll('#tech-list-1 .dropdown-option').forEach(o => o.classList.remove('selected-opt'));
+    document.querySelector('#tech-list-1 [data-value="Any Tech"]').classList.add('selected-opt');
+    document.getElementById('tech-display-1').textContent = 'Any Tech';
+
+    // Reset time display and rebuild list clean
+    document.getElementById('time-display-1').textContent = 'Select a time…';
+    document.getElementById('time-display-1').classList.add('placeholder');
+    const tl = document.getElementById('time-list-1');
+    tl.innerHTML = '';
+    delete tl.dataset.built;
+  }
+
+  // ── Init ──
+  // Build time list for first appointment on first open
+  document.getElementById('time-dropdown-1')
+    .querySelector('.dropdown-trigger')
+    .addEventListener('click', function () { buildTimeList(1); });
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check In · SALON NAME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ============================================================
+       CUSTOMIZE THESE COLORS PER CLIENT (match index.html)
+       ============================================================ */
+    :root {
+      --bg:        #fdf0ec;
+      --text:      #8a5a42;
+      --accent:    #b87a5a;
+      --accent-lt: #c9956a;
+      --floral:    #f2bfb5;
+      --card-bg:   #fff9f7;
+      --border:    #e8c9bc;
+      --white:     #ffffff;
+    }
+
+    body { font-family: 'Jost', sans-serif; font-weight: 400; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    header { background: var(--bg); text-align: center; padding: 2.5rem 1.5rem 2rem; border-bottom: 0.5px solid var(--border); }
+    .header-logo { height: 90px; width: auto; margin: 0 auto 0.5rem; display: block; }
+    .header-brand-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(2.8rem, 7vw, 4.2rem); color: var(--accent); line-height: 1; }
+    .header-subtitle { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text); margin-top: 0.3rem; }
+    .header-sep { color: var(--floral); font-size: 0.65rem; margin: 0.6rem 0; letter-spacing: 0.5em; }
+    .header-info { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 0.82rem; color: var(--accent-lt); line-height: 1.9; }
+    .header-info a { color: var(--accent-lt); text-decoration: none; }
+
+    main { flex: 1; padding: 2.5rem 1.5rem 3rem; }
+
+    .card { background: var(--card-bg); border: 0.5px solid var(--border); border-radius: 16px; width: 100%; max-width: 520px; margin: 0 auto; padding: 2rem; }
+    .card-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.7rem; color: var(--accent); margin-bottom: 0.3rem; }
+    .card-sub { font-size: 0.82rem; font-weight: 300; color: var(--accent-lt); margin-bottom: 1.8rem; }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1.1rem; }
+    label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
+    input[type="tel"], input[type="password"] {
+      border: 0.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.9rem;
+      font-family: 'Jost', sans-serif; font-size: 0.92rem; font-weight: 300;
+      color: var(--text); background: var(--white); outline: none; width: 100%; transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+    input::placeholder { color: #c9b0a4; }
+
+    .btn { font-family: 'Jost', sans-serif; font-weight: 400; font-size: 0.85rem; letter-spacing: 0.06em; border-radius: 24px; padding: 0.65rem 1.6rem; cursor: pointer; border: none; transition: opacity 0.15s, transform 0.1s; text-transform: uppercase; }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: #fff9f7; }
+    .btn-ghost { background: transparent; color: var(--accent); border: 0.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); }
+    .btn-full { width: 100%; margin-top: 0.5rem; padding: 0.75rem; font-size: 0.88rem; }
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .btn-row { display: flex; gap: 0.8rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+
+    .error-banner { display: none; background: #fde8df; border: 0.5px solid #d4917a; border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.82rem; color: #7a3a25; margin-bottom: 1.2rem; }
+    .error-banner.visible { display: block; }
+
+    /* ─── APPOINTMENT CARD ─── */
+    .appt-card { background: #fde8df; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.2rem; }
+    .appt-card-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.4rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .appt-card-row { font-size: 0.82rem; font-weight: 300; color: var(--text); line-height: 2; }
+    .appt-card-row strong { font-weight: 500; color: var(--accent); }
+
+    .points-preview { font-size: 0.82rem; font-weight: 300; color: var(--text); background: var(--white); border: 0.5px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.2rem; line-height: 1.7; }
+    .points-preview strong { font-weight: 500; color: var(--accent); }
+
+    /* ─── CONFIRMATION ─── */
+    .confirm-star { font-size: 1rem; color: var(--floral); letter-spacing: 0.4em; margin-bottom: 0.8rem; display: block; }
+    .confirm-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2rem; color: var(--accent); margin-bottom: 1rem; }
+    .confirm-body { font-size: 0.88rem; font-weight: 300; line-height: 2; color: var(--text); }
+    .confirm-body strong { font-weight: 500; color: var(--accent); }
+    .rewards-progress { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.6rem; overflow: hidden; }
+    .rewards-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+    /* ─── HOME BUTTONS ─── */
+    .home-options { display: flex; flex-direction: column; gap: 1rem; max-width: 520px; margin: 0 auto; }
+    .home-btn { background: var(--card-bg); border: 0.5px solid var(--border); border-radius: 16px; padding: 1.8rem 2rem; cursor: pointer; text-align: center; transition: border-color 0.2s, transform 0.1s; text-decoration: none; display: block; }
+    .home-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .home-btn-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.5rem; color: var(--accent); margin-bottom: 0.3rem; }
+    .home-btn-sub { font-size: 0.78rem; font-weight: 300; color: var(--accent-lt); letter-spacing: 0.04em; }
+
+    #step-home    { display: block; }
+    #step-checkin { display: none; }
+    #step-confirm { display: none; }
+
+    footer { text-align: center; padding: 1.2rem; font-size: 0.76rem; font-weight: 300; color: var(--accent); letter-spacing: 0.04em; border-top: 0.5px solid var(--border); }
+
+    @media (max-width: 520px) {
+      .card { padding: 1.8rem 1.2rem; }
+      .btn-row { flex-direction: column; }
+      .btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <img src="logo.jpg" alt="Salon Logo" class="header-logo" onerror="this.style.display='none'" />
+  <div class="header-brand-name"><!-- SALON NAME --></div>
+  <div class="header-subtitle">Nails &amp; Spa</div>
+  <div class="header-sep">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <div class="header-info">
+    <!-- STREET ADDRESS --> &nbsp;✦&nbsp; <!-- CITY, STATE ZIP --><br>
+    <a href="tel:+1XXXXXXXXXX">(XXX) XXX-XXXX</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- STEP 1: HOME — Check In or Book -->
+  <div id="step-home">
+    <div class="home-options">
+      <a class="home-btn" onclick="showCheckin()">
+        <div class="home-btn-title">Check In</div>
+        <div class="home-btn-sub">I have an appointment today</div>
+      </a>
+      <a class="home-btn" href="index.html">
+        <div class="home-btn-title">Book an Appointment</div>
+        <div class="home-btn-sub">Schedule a new visit</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- STEP 2: CHECK IN FORM -->
+  <div id="step-checkin">
+    <div class="card">
+      <div class="card-title">Check In</div>
+      <div class="card-sub">Enter your phone number to find your appointment</div>
+
+      <div class="error-banner" id="checkin-error"></div>
+
+      <div class="form-group">
+        <label for="checkin-phone">Phone Number</label>
+        <input type="tel" id="checkin-phone" placeholder="(XXX) XXX-XXXX" maxlength="14" />
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="handleCheckin()">Find My Appointment</button>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="showHome()">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: CONFIRMATION -->
+  <div id="step-confirm">
+    <div class="card" style="text-align:center; padding: 3rem 2rem;">
+      <span class="confirm-star">✦ &nbsp; ✦ &nbsp; ✦</span>
+      <div class="confirm-title" id="confirm-title">Welcome!</div>
+      <div class="confirm-body" id="confirm-body"></div>
+      <div class="btn-row" style="justify-content:center; margin-top:2rem;">
+        <button class="btn btn-ghost" onclick="showHome()">Done</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>© 2026 <!-- SALON NAME --> &nbsp;·&nbsp; <!-- CITY, STATE --></footer>
+
+<script>
+  // ============================================================
+  // CUSTOMIZE: Must match index.html
+  // ============================================================
+  const SCRIPT_URL        = 'YOUR_APPS_SCRIPT_URL_HERE';
+  const FREE_PEDICURE_PTS = 125;
+  // ============================================================
+
+  // Phone formatting
+  document.getElementById('checkin-phone').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '').slice(0, 10);
+    if (v.length >= 7)      v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
+    else if (v.length >= 4) v = '(' + v.slice(0,3) + ') ' + v.slice(3);
+    else if (v.length >= 1) v = '(' + v;
+    this.value = v;
+  });
+
+  function showHome() {
+    document.getElementById('checkin-phone').value = '';
+    clearError();
+    show('step-home'); hide('step-checkin'); hide('step-confirm');
+  }
+
+  function showCheckin() {
+    hide('step-home'); show('step-checkin'); hide('step-confirm');
+  }
+
+  async function handleCheckin() {
+    const raw = document.getElementById('checkin-phone').value.replace(/\D/g, '');
+    if (!raw) { showError('Please enter your phone number.'); return; }
+
+    const btn = document.querySelector('#step-checkin .btn-primary');
+    btn.disabled = true; btn.textContent = 'Looking up…';
+    clearError();
+
+    try {
+      const res  = await fetch(`${SCRIPT_URL}?action=checkin&phone=${encodeURIComponent(raw)}`);
+      const data = await res.json();
+
+      if (!data.found) {
+        showError("We couldn't find an appointment for you today. Please see the front desk.");
+        btn.disabled = false; btn.textContent = 'Find My Appointment';
+        return;
+      }
+
+      if (data.alreadyCheckedIn) {
+        showError(`You're already checked in for today, ${data.firstName}! See you soon.`);
+        btn.disabled = false; btn.textContent = 'Find My Appointment';
+        return;
+      }
+
+      // Show confirmation
+      const pct = Math.min(100, Math.round((data.totalPoints / FREE_PEDICURE_PTS) * 100));
+      document.getElementById('confirm-title').textContent = `Welcome, ${data.firstName}! ✦`;
+
+      let body = `
+        <div style="text-align:left; margin-bottom:1.2rem;">
+          <div style="font-size:0.82rem; font-weight:300; line-height:2; color:var(--text);">
+            <strong>${data.services}</strong><br>
+            With: ${data.technician}<br>
+            Time: ${data.time}
+          </div>
+        </div>
+        <div style="background:#fde8df; border-radius:8px; padding:0.9rem 1rem; font-size:0.82rem; font-weight:300; line-height:1.8; text-align:left;">
+          <strong>+${data.pointsEarned} points added to your account!</strong><br>
+          You now have <strong>${data.totalPoints} points</strong>.<br>`;
+
+      if (data.freeReward) {
+        body += `🎉 <strong>You've earned a free pedicure!</strong> Mention this to your technician.`;
+      } else {
+        body += `${data.pointsToFree} more points until a free pedicure.
+          <div class="rewards-progress"><div class="rewards-progress-fill" style="width:${pct}%"></div></div>`;
+      }
+      body += `</div>`;
+
+      document.getElementById('confirm-body').innerHTML = body;
+      hide('step-checkin'); show('step-confirm');
+
+    } catch (err) {
+      showError('Something went wrong — please see the front desk.');
+    }
+
+    btn.disabled = false; btn.textContent = 'Find My Appointment';
+  }
+
+  function showError(msg) {
+    const b = document.getElementById('checkin-error');
+    b.textContent = msg; b.classList.add('visible');
+  }
+  function clearError() {
+    const b = document.getElementById('checkin-error');
+    b.textContent = ''; b.classList.remove('visible');
+  }
+  function show(id) { document.getElementById(id).style.display = 'block'; }
+  function hide(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+</body>
+</html>

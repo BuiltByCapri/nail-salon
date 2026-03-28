@@ -1,61 +1,117 @@
-// ── Cha Nails & Spa — Google Apps Script Backend ──
-//
-// Sheet column layout (row 1 = header):
-//   A (0) Phone | B (1) First | C (2) Last | D (3) Date | E (4) Technician
-//   F (5) Time | G (6) Services | H (7) Submitted At
-//
-// Deploy: Extensions → Apps Script → Deploy → Manage deployments → new version
-//   Execute as: Me | Who has access: Anyone
+// ============================================================
+// SALON NAME — Google Apps Script Booking Backend
+// ============================================================
+// SETUP:
+// 1. Create a Google Sheet — paste its ID below as SHEET_ID
+// 2. Deploy: Extensions → Apps Script → Deploy → New deployment
+//    - Type: Web App | Execute as: Me | Who has access: Anyone
+// 3. Paste the deployment URL into index.html as SCRIPT_URL
+// 4. To update after code changes: Deploy → Manage deployments →
+//    pencil → Version: New version → Deploy (URL stays the same)
+// ============================================================
 
-const SHEET_ID   = '1WnatJY-KwF-e0bW1i1wK61KNWfqN4hqGb3eObT8ONjQ';
-const SHEET_NAME = 'Sheet1';
+// ============================================================
+// CUSTOMIZE THESE VALUES PER CLIENT
+// ============================================================
+const SHEET_ID        = 'YOUR_GOOGLE_SHEET_ID_HERE';
+const SHEET_NAME      = 'Sheet1';
+const SALON_NAME      = 'Salon Name';
+const SALON_PHONE     = '(XXX) XXX-XXXX';
+const CARRIER_GATEWAY = '@txt.att.net'; // Change per carrier:
+// AT&T:      @txt.att.net
+// T-Mobile:  @tmomail.net
+// Verizon:   @vtext.com
+// Sprint:    @messaging.sprintpcs.com
+// US Cellular: @email.uscc.net
 
-// ── Entry points ─────────────────────────────────────────────────────────────
+// ── REWARDS CONFIG ──────────────────────────────────────────
+// Points awarded per service
+const SERVICE_POINTS = {
+  'Pedicure':      10,
+  'Manicure':      10,
+  'Gel Manicure':  15,
+  'Full Set':      10,
+  'Fill-In':       10,
+  'Color Dipping': 15,
+  'Wax':           10,
+  'Polish Change': 10,
+  'Repair':        5,
+  'Other':         10,
+};
+const DEFAULT_POINTS       = 10;   // fallback for unlisted services
+const FREE_PEDICURE_POINTS = 125;  // points needed for a free pedicure
+// ============================================================
+
+// Sheet tabs
+const APPT_TAB     = 'Appointments';
+const CUSTOMER_TAB = 'Customers';
+// Appointments columns: Phone|First|Last|Date|Technician|Time|Services|Email|Points|Submitted At
+// Customers columns:    Phone|First|Last|Email|TotalPoints|TotalVisits|LastVisit
+
+// ── Entry points ──────────────────────────────────────────────────────────────
 
 function doGet(e) {
-  // Apps Script web apps automatically include Access-Control-Allow-Origin: *
-  // for GET requests when deployed as "Execute as: Me / Anyone can access".
   const action = e.parameter.action;
   if (action === 'lookup')       return lookupPhone(e.parameter.phone);
-  if (action === 'availability') return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services);
+  if (action === 'availability') return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services, e.parameter.multiTech);
   if (action === 'book')         return bookAppointment(e.parameter);
   if (action === 'debug')        return debugInfo(e.parameter.technician, e.parameter.date);
   return json({ error: 'Unknown action' });
 }
 
-// ── Handlers ──────────────────────────────────────────────────────────────────
+// ── Lookup ────────────────────────────────────────────────────────────────────
 
 // GET ?action=lookup&phone=7135551234
-// Returns { found, firstName, lastName } — most recent row for that phone
+// Returns { found, firstName, lastName, email, points, pointsToFree, freeReward }
 function lookupPhone(phone) {
   const clean = String(phone || '').replace(/\D/g, '');
   if (!clean) return json({ found: false });
 
-  const rows  = getRows();
-  let match   = null;
-  for (const row of rows) {
-    if (String(row[0]).replace(/\D/g, '') === clean) match = row;
+  const sheet = getSheet(CUSTOMER_TAB);
+  const rows  = sheet.getDataRange().getDisplayValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).replace(/\D/g, '') === clean) {
+      const points      = parseInt(rows[i][4], 10) || 0;
+      const pointsToFree = Math.max(0, FREE_PEDICURE_POINTS - points);
+      return json({
+        found:        true,
+        firstName:    rows[i][1],
+        lastName:     rows[i][2],
+        email:        rows[i][3],
+        points:       points,
+        pointsToFree: pointsToFree,
+        freeReward:   points >= FREE_PEDICURE_POINTS,
+      });
+    }
   }
 
-  if (match) return json({ found: true, firstName: match[1], lastName: match[2] });
   return json({ found: false });
 }
 
-// GET ?action=availability&technician=Tech%2C%20Tech&date=2026-04-01&services=Pedicure+45min
-// Returns { unavailableSlots: [...] } — start times where the new booking
-// (given its duration) would overlap any existing booking.
-// When multiple techs selected, a slot is only blocked if ALL are unavailable.
-function checkAvailability(technician, date, services) {
+// ── Availability ──────────────────────────────────────────────────────────────
+
+// GET ?action=availability&technician=Tech1,Tech2&date=2026-04-01
+//     &services=Pedicure 45min,Manicure 30min&multiTech=true
+//
+// multiTech=true  → group booking: block by MAX service duration (simultaneous)
+// multiTech=false → solo booking:  block by SUM of service durations (sequential)
+//
+// Returns { unavailableSlots: [...] }
+function checkAvailability(technician, date, services, multiTech) {
   if (!technician || !date) return json({ unavailableSlots: [] });
 
-  const rows  = getRows();
-  const techs = technician.split(',').map(function(t) { return t.trim(); });
+  const rows      = getApptRows();
+  const techs     = technician.split(',').map(function(t) { return t.trim(); });
+  const isMulti   = multiTech === 'true';
 
   function unavailableStarts(tech) {
     const existing = getUnavailableSlots(tech, date, rows);
-    // A start time is unavailable if any slot the new booking would occupy is taken.
     return new Set(allTimeSlots().filter(function(slot) {
-      return getBlockedSlots(slot, services || '').some(function(s) { return existing.has(s); });
+      const blocked = isMulti
+        ? getBlockedSlotsMax(slot, services || '')
+        : getBlockedSlotsSum(slot, services || '');
+      return blocked.some(function(s) { return existing.has(s); });
     }));
   }
 
@@ -63,7 +119,7 @@ function checkAvailability(technician, date, services) {
     return json({ unavailableSlots: [...unavailableStarts(techs[0])] });
   }
 
-  // Multi-tech: only block a slot when ALL selected techs are unavailable.
+  // Multi-tech: slot only blocked when ALL selected techs are unavailable
   const setsPerTech = techs.map(unavailableStarts);
   const unavailable = allTimeSlots().filter(function(slot) {
     return setsPerTech.every(function(s) { return s.has(slot); });
@@ -71,22 +127,28 @@ function checkAvailability(technician, date, services) {
   return json({ unavailableSlots: unavailable });
 }
 
-// GET ?action=book&phone=&firstName=&lastName=&date=&technician=&time=&services=
-// Checks for conflicts (using duration-aware blocking), then writes one row.
+// ── Book ──────────────────────────────────────────────────────────────────────
+
+// GET ?action=book&phone=&firstName=&lastName=&email=&date=
+//     &technician=&time=&services=&multiTech=true
 function bookAppointment(params) {
   const phone      = params.phone      || '';
   const firstName  = params.firstName  || '';
   const lastName   = params.lastName   || '';
+  const email      = params.email      || '';
   const date       = params.date       || '';
   const technician = params.technician || 'Any Tech';
   const time       = params.time       || '';
   const services   = params.services   || '';
+  const isMulti    = params.multiTech  === 'true';
 
-  const rows  = getRows();
+  const rows  = getApptRows();
   const techs = technician.split(',').map(function(t) { return t.trim(); });
 
-  // A tech is "booked" if any slot the new booking would occupy is already taken.
-  const newBookingSlots = getBlockedSlots(time, services);
+  const newBookingSlots = isMulti
+    ? getBlockedSlotsMax(time, services)
+    : getBlockedSlotsSum(time, services);
+
   const bookedTechs = techs.filter(function(t) {
     const unavail = getUnavailableSlots(t, date, rows);
     return newBookingSlots.some(function(slot) { return unavail.has(slot); });
@@ -94,96 +156,235 @@ function bookAppointment(params) {
   const freeTechs = techs.filter(function(t) { return bookedTechs.indexOf(t) === -1; });
 
   if (bookedTechs.length > 0 && freeTechs.length > 0) {
-    // Some techs booked, some free → partial conflict.
-    const next = findNextAvailable(bookedTechs[0], date, time, rows, services);
-    const bookedStr = bookedTechs.join(' and ');
-    const freeStr   = freeTechs.join(' and ');
+    const next = findNextAvailable(bookedTechs[0], date, time, rows, services, isMulti);
     return json({
-      success:         false,
-      partialConflict: true,
-      bookedTechs:     bookedTechs,
-      freeTechs:       freeTechs,
-      nextAvailable:   next,
-      error:           bookedStr + ' is not available at ' + time + '. ' + freeStr + ' can see you at that time.',
+      success: false, partialConflict: true,
+      bookedTechs: bookedTechs, freeTechs: freeTechs, nextAvailable: next,
+      error: bookedTechs.join(' and ') + ' is not available at ' + time + '. ' + freeTechs.join(' and ') + ' can see you at that time.',
     });
   }
 
   if (bookedTechs.length === techs.length) {
-    // All selected techs are booked → full conflict.
-    const next = findNextAvailable(technician, date, time, rows, services);
+    const next = findNextAvailable(technician, date, time, rows, services, isMulti);
     return json({
-      success:       false,
-      conflict:      true,
-      nextAvailable: next,
-      error:         technician + ' is not available at ' + time + '.',
+      success: false, conflict: true, nextAvailable: next,
+      error: technician + ' is not available at ' + time + '.',
     });
   }
 
-  const sheet = getSheet();
-  ensureHeader(sheet);
-  sheet.appendRow([phone, firstName, lastName, date, technician, time, services, new Date().toISOString()]);
-  return json({ success: true });
+  // Calculate points earned
+  const pointsEarned = calcPoints(services);
+
+  // Write appointment
+  const apptSheet = getSheet(APPT_TAB);
+  ensureApptHeader(apptSheet);
+  apptSheet.appendRow([phone, firstName, lastName, date, technician, time, services, email, pointsEarned, new Date().toISOString()]);
+
+  // Update customer record and get new total
+  const newTotal = upsertCustomer(phone, firstName, lastName, email, pointsEarned, date);
+  const pointsToFree = Math.max(0, FREE_PEDICURE_POINTS - newTotal);
+
+  // Send confirmation + reminder
+  sendConfirmation(email, phone, firstName, date, time, technician, services, newTotal, pointsToFree);
+  scheduleReminder(email, phone, firstName, date, time, technician);
+
+  return json({
+    success:       true,
+    pointsEarned:  pointsEarned,
+    totalPoints:   newTotal,
+    pointsToFree:  pointsToFree,
+    freeReward:    newTotal >= FREE_PEDICURE_POINTS,
+  });
 }
 
-// ── Duration-aware slot blocking ──────────────────────────────────────────────
+// ── Time blocking ─────────────────────────────────────────────────────────────
 
-// Returns a Set of all time strings that are unavailable for technician+date,
-// accounting for service duration + 15-min grace period on each booking.
+// SOLO booking: block sum of all service durations + 15 grace
+function getBlockedSlotsSum(startTime, servicesStr) {
+  const totalMin = parseTotalDurationSum(servicesStr) + 15;
+  return slotsFromStart(startTime, totalMin);
+}
+
+// GROUP booking (multiTech): block max single service duration + 15 grace
+function getBlockedSlotsMax(startTime, servicesStr) {
+  const totalMin = parseTotalDurationMax(servicesStr) + 15;
+  return slotsFromStart(startTime, totalMin);
+}
+
+function slotsFromStart(startTime, totalMin) {
+  const startMin = timeToMinutes(startTime);
+  const blocked  = [];
+  for (const slot of allTimeSlots()) {
+    const slotMin = timeToMinutes(slot);
+    if (slotMin >= startMin && slotMin < startMin + totalMin) blocked.push(slot);
+  }
+  return blocked;
+}
+
+// Sum of all durations: "Pedicure 45min, Manicure 30min" → 75
+function parseTotalDurationSum(servicesStr) {
+  const matches = String(servicesStr).match(/(\d+)min/g) || [];
+  const total   = matches.reduce(function(s, m) { return s + parseInt(m, 10); }, 0);
+  return total > 0 ? total : 15;
+}
+
+// Max single duration: "Pedicure 45min, Manicure 30min" → 45
+function parseTotalDurationMax(servicesStr) {
+  const matches = String(servicesStr).match(/(\d+)min/g) || [];
+  if (!matches.length) return 15;
+  return Math.max.apply(null, matches.map(function(m) { return parseInt(m, 10); }));
+}
+
+// ── Unavailable slots for a technician ───────────────────────────────────────
+
 function getUnavailableSlots(technician, date, rows) {
-  const isAny      = technician === 'Any Tech';
+  const isAny       = technician === 'Any Tech';
   const unavailable = new Set();
 
   for (const row of rows) {
-    // getRows() uses getDisplayValues() — these are always plain strings.
     if (row[3] !== date) continue;
     const rowTechs = row[4].split(',').map(function(t) { return t.trim(); });
     if (!isAny && !rowTechs.includes('Any Tech') && !rowTechs.includes(technician)) continue;
-
-    const blocked = getBlockedSlots(row[5], row[6]);
-    blocked.forEach(function(s) { unavailable.add(s); });
+    // Use sum blocking for existing bookings (most conservative)
+    getBlockedSlotsSum(row[5], row[6]).forEach(function(s) { unavailable.add(s); });
   }
 
   return unavailable;
 }
 
-// Returns all 15-min slots occupied by a booking:
-// from start time up to (but not including) start + duration + 15-min grace.
-function getBlockedSlots(startTime, servicesStr) {
-  const totalMin  = parseTotalDuration(servicesStr) + 15;
-  const startMin  = timeToMinutes(startTime);
-  const blocked   = [];
+// ── Next available ────────────────────────────────────────────────────────────
 
-  for (const slot of allTimeSlots()) {
-    const slotMin = timeToMinutes(slot);
-    if (slotMin >= startMin && slotMin < startMin + totalMin) {
-      blocked.push(slot);
-    }
-  }
-
-  return blocked;
-}
-
-// Parses "Full Set 45min, Pedicure 45min" → 90
-function parseTotalDuration(servicesStr) {
-  const matches = String(servicesStr).match(/(\d+)min/g) || [];
-  const total   = matches.reduce((sum, m) => sum + parseInt(m, 10), 0);
-  return total > 0 ? total : 15;
-}
-
-// ── Next-available helper ─────────────────────────────────────────────────────
-
-function findNextAvailable(technician, date, requestedTime, rows, services) {
+function findNextAvailable(technician, date, requestedTime, rows, services, isMulti) {
   const unavailable = getUnavailableSlots(technician, date, rows);
   const reqMin      = timeToMinutes(requestedTime);
 
   for (const slot of allTimeSlots()) {
     if (timeToMinutes(slot) <= reqMin) continue;
-    // Check that the entire new booking duration fits without overlap.
-    const newSlots = getBlockedSlots(slot, services || '');
+    const newSlots = isMulti
+      ? getBlockedSlotsMax(slot, services || '')
+      : getBlockedSlotsSum(slot, services || '');
     if (newSlots.every(function(s) { return !unavailable.has(s); })) return slot;
   }
 
   return null;
+}
+
+// ── Rewards ───────────────────────────────────────────────────────────────────
+
+function calcPoints(servicesStr) {
+  let total = 0;
+  for (const name of Object.keys(SERVICE_POINTS)) {
+    if (servicesStr.indexOf(name) !== -1) total += SERVICE_POINTS[name];
+  }
+  return total > 0 ? total : DEFAULT_POINTS;
+}
+
+function upsertCustomer(phone, firstName, lastName, email, pointsEarned, visitDate) {
+  const sheet = getSheet(CUSTOMER_TAB);
+  ensureCustomerHeader(sheet);
+  const rows  = sheet.getDataRange().getDisplayValues();
+  const clean = String(phone).replace(/\D/g, '');
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).replace(/\D/g, '') === clean) {
+      const newPoints = (parseInt(rows[i][4], 10) || 0) + pointsEarned;
+      const newVisits = (parseInt(rows[i][5], 10) || 0) + 1;
+      sheet.getRange(i + 1, 2).setValue(firstName);
+      sheet.getRange(i + 1, 3).setValue(lastName);
+      if (email) sheet.getRange(i + 1, 4).setValue(email);
+      sheet.getRange(i + 1, 5).setValue(newPoints);
+      sheet.getRange(i + 1, 6).setValue(newVisits);
+      sheet.getRange(i + 1, 7).setValue(visitDate);
+      return newPoints;
+    }
+  }
+
+  // New customer
+  sheet.appendRow([clean, firstName, lastName, email, pointsEarned, 1, visitDate]);
+  return pointsEarned;
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+
+function sendConfirmation(email, phone, firstName, date, time, technician, services, totalPoints, pointsToFree) {
+  const subject = 'Your appointment at ' + SALON_NAME + ' is confirmed!';
+  let body = 'Hi ' + firstName + ',\n\n'
+    + 'Your appointment is confirmed:\n'
+    + '  Date: ' + formatDate(date) + '\n'
+    + '  Time: ' + time + '\n'
+    + '  Technician: ' + technician + '\n'
+    + '  Services: ' + services + '\n\n'
+    + 'Rewards: You now have ' + totalPoints + ' points.\n';
+
+  if (pointsToFree <= 0) {
+    body += 'You have earned a FREE pedicure! Mention this at your next visit.\n';
+  } else {
+    body += 'You need ' + pointsToFree + ' more points for a free pedicure.\n';
+  }
+
+  body += '\nQuestions? Call us at ' + SALON_PHONE + '.\n\nSee you soon!\n' + SALON_NAME;
+
+  // Email confirmation
+  if (email) {
+    try { GmailApp.sendEmail(email, subject, body); } catch(e) {}
+  }
+
+  // SMS via email-to-carrier gateway
+  if (phone) {
+    const smsAddress = String(phone).replace(/\D/g, '') + CARRIER_GATEWAY;
+    const smsBody    = SALON_NAME + ': Appt confirmed ' + formatDate(date) + ' at ' + time
+      + ' with ' + technician + '. Points: ' + totalPoints
+      + (pointsToFree <= 0 ? ' - FREE pedicure earned!' : ' (' + pointsToFree + ' to free pedicure).')
+      + ' Questions? ' + SALON_PHONE;
+    try { GmailApp.sendEmail(smsAddress, '', smsBody); } catch(e) {}
+  }
+}
+
+function scheduleReminder(email, phone, firstName, date, time, technician) {
+  // Store reminder details in a Reminders tab — a time-based trigger fires daily
+  // and sends reminders for appointments the next day.
+  const sheet = getSheet('Reminders');
+  ensureReminderHeader(sheet);
+  sheet.appendRow([date, time, firstName, email, phone, technician, 'pending']);
+}
+
+// ── Daily reminder trigger ────────────────────────────────────────────────────
+// Set up: Apps Script → Triggers → Add trigger → sendDailyReminders
+// Trigger type: Time-driven → Day timer → any hour
+
+function sendDailyReminders() {
+  const sheet    = getSheet('Reminders');
+  const rows     = sheet.getDataRange().getDisplayValues();
+  const tomorrow = getTomorrowDate();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][0] !== tomorrow) continue;
+    if (rows[i][6] === 'sent')   continue;
+
+    const firstName  = rows[i][2];
+    const email      = rows[i][3];
+    const phone      = rows[i][4];
+    const time       = rows[i][1];
+    const technician = rows[i][5];
+
+    const subject = 'Reminder: Your appointment tomorrow at ' + SALON_NAME;
+    const body    = 'Hi ' + firstName + ',\n\nJust a reminder that you have an appointment tomorrow:\n'
+      + '  Date: ' + formatDate(tomorrow) + '\n'
+      + '  Time: ' + time + '\n'
+      + '  Technician: ' + technician + '\n\n'
+      + 'Need to reschedule? Call us at ' + SALON_PHONE + '.\n\nSee you soon!\n' + SALON_NAME;
+
+    if (email) {
+      try { GmailApp.sendEmail(email, subject, body); } catch(e) {}
+    }
+    if (phone) {
+      const smsAddress = String(phone).replace(/\D/g, '') + CARRIER_GATEWAY;
+      const smsBody    = SALON_NAME + ' reminder: Tomorrow ' + time + ' with ' + technician + '. Questions? ' + SALON_PHONE;
+      try { GmailApp.sendEmail(smsAddress, '', smsBody); } catch(e) {}
+    }
+
+    sheet.getRange(i + 1, 7).setValue('sent');
+  }
 }
 
 // ── Time helpers ──────────────────────────────────────────────────────────────
@@ -203,7 +404,6 @@ function allTimeSlots() {
 }
 
 function timeToMinutes(timeVal) {
-  // getRows() uses getDisplayValues(), so timeVal is always a string like "9:00 AM".
   try {
     const parts = String(timeVal).split(' ');
     const ampm  = parts[1];
@@ -216,29 +416,52 @@ function timeToMinutes(timeVal) {
   } catch (_) { return -1; }
 }
 
-// ── Sheet helpers ─────────────────────────────────────────────────────────────
-
-function getSheet() {
-  return SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME)
-      || SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+function formatDate(dateStr) {
+  try {
+    const [y, m, d] = dateStr.split('-');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return months[parseInt(m, 10) - 1] + ' ' + parseInt(d, 10) + ', ' + y;
+  } catch (_) { return dateStr; }
 }
 
-function getRows() {
-  const sheet = getSheet();
+function getTomorrowDate() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return Utilities.formatDate(d, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+}
+
+// ── Sheet helpers ─────────────────────────────────────────────────────────────
+
+function getSheet(tabName) {
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  return ss.getSheetByName(tabName) || ss.insertSheet(tabName);
+}
+
+function getApptRows() {
+  const sheet = getSheet(APPT_TAB);
   const range = sheet.getDataRange();
   if (range.getLastRow() < 2) return [];
-  // Use getDisplayValues() so date/time cells come back as the strings
-  // shown in the sheet ("2026-03-30", "9:00 AM") rather than Date objects,
-  // eliminating timezone-shift bugs entirely.
   const rows = range.getDisplayValues();
   return rows.slice(1).filter(function(r) {
     return r[0] !== '' && r[0].toLowerCase() !== 'phone';
   });
 }
 
-function ensureHeader(sheet) {
+function ensureApptHeader(sheet) {
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['Phone','First Name','Last Name','Date','Technician','Time','Services','Submitted At']);
+    sheet.appendRow(['Phone','First Name','Last Name','Date','Technician','Time','Services','Email','Points','Submitted At']);
+  }
+}
+
+function ensureCustomerHeader(sheet) {
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Phone','First Name','Last Name','Email','Total Points','Total Visits','Last Visit']);
+  }
+}
+
+function ensureReminderHeader(sheet) {
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Date','Time','First Name','Email','Phone','Technician','Status']);
   }
 }
 
@@ -248,33 +471,16 @@ function json(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// ── Debug endpoint ────────────────────────────────────────────────────────────
-// GET ?action=debug&technician=Tech&date=2026-03-30
+// ── Debug ─────────────────────────────────────────────────────────────────────
+// GET ?action=debug&technician=Tech1&date=2026-04-01
 function debugInfo(technician, date) {
-  const rows = getRows();
+  const rows     = getApptRows();
   const rowsData = rows.map(function(r) {
-    const rawDate = r[3];
-    const rawTime = r[5];
-    const fmtDate = rawDate instanceof Date
-      ? Utilities.formatDate(rawDate, Session.getScriptTimeZone(), 'yyyy-MM-dd')
-      : String(rawDate);
-    return {
-      phone:    String(r[0]),
-      rawDate:  String(rawDate),
-      dateType: rawDate instanceof Date ? 'Date' : typeof rawDate,
-      fmtDate:  fmtDate,
-      tech:     String(r[4]),
-      rawTime:  String(rawTime),
-      timeType: rawTime instanceof Date ? 'Date' : typeof rawTime,
-      services: String(r[6]),
-    };
+    return { phone: String(r[0]), date: String(r[3]), tech: String(r[4]), time: String(r[5]), services: String(r[6]) };
   });
-
   let unavailable = [];
   if (technician && date) {
-    const slots = getUnavailableSlots(technician, date, rows);
-    unavailable = [...slots];
+    unavailable = [...getUnavailableSlots(technician, date, rows)];
   }
-
   return json({ tz: Session.getScriptTimeZone(), rows: rowsData, unavailable: unavailable });
 }

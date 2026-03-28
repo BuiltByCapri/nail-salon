@@ -5,7 +5,7 @@
 // 1. Create a Google Sheet — paste its ID below as SHEET_ID
 // 2. Deploy: Extensions → Apps Script → Deploy → New deployment
 //    - Type: Web App | Execute as: Me | Who has access: Anyone
-// 3. Paste the deployment URL into index.html as SCRIPT_URL
+// 3. Paste the deployment URL into index.html and checkin.html as SCRIPT_URL
 // 4. To update after code changes: Deploy → Manage deployments →
 //    pencil → Version: New version → Deploy (URL stays the same)
 // ============================================================
@@ -17,16 +17,15 @@ const SHEET_ID        = '1WnatJY-KwF-e0bW1i1wK61KNWfqN4hqGb3eObT8ONjQ';
 const SHEET_NAME      = 'Sheet1';
 const SALON_NAME      = 'Salon Name';
 const SALON_PHONE     = '(XXX) XXX-XXXX';
-const CARRIER_GATEWAY = '<>number@txt.att.net'; // Change per carrier: 
-// AT&T:      @txt.att.net
-// T-Mobile:  @tmomail.net
-// Verizon:   @vtext.com
-// Sprint:    @messaging.sprintpcs.com
+const CARRIER_GATEWAY = '@txt.att.net'; // Change per carrier:
+// AT&T:        @txt.att.net
+// T-Mobile:    @tmomail.net
+// Verizon:     @vtext.com
+// Sprint:      @messaging.sprintpcs.com
 // US Cellular: @email.uscc.net
-// Comcast : @comcast.pcs.textmsg.com
+// Comcast:     @comcastpcs.textmsg.com
 
-// ── REWARDS CONFIG ──────────────────────────────────────────
-// Points awarded per service
+// ── REWARDS CONFIG ───────────────────────────────────────────
 const SERVICE_POINTS = {
   'Pedicure':      10,
   'Manicure':      10,
@@ -39,15 +38,22 @@ const SERVICE_POINTS = {
   'Repair':        5,
   'Other':         10,
 };
-const DEFAULT_POINTS       = 10;   // fallback for unlisted services
-const FREE_PEDICURE_POINTS = 125;  // points needed for a free pedicure
+const DEFAULT_POINTS       = 10;
+const FREE_PEDICURE_POINTS = 125;
 // ============================================================
 
 // Sheet tabs
 const APPT_TAB     = 'Appointments';
 const CUSTOMER_TAB = 'Customers';
-// Appointments columns: Phone|First|Last|Date|Technician|Time|Services|Email|Points|Submitted At
-// Customers columns:    Phone|First|Last|Email|TotalPoints|TotalVisits|LastVisit
+
+// Appointments columns:
+//   A(0) Phone | B(1) First | C(2) Last | D(3) Date | E(4) Technician
+//   F(5) Time | G(6) Services | H(7) Email | I(8) Points Preview
+//   J(9) Submitted At | K(10) Status
+
+// Customers columns:
+//   A(0) Phone | B(1) First | C(2) Last | D(3) Email
+//   E(4) Total Points | F(5) Total Visits | G(6) Last Visit
 
 // ── Entry points ──────────────────────────────────────────────────────────────
 
@@ -56,6 +62,7 @@ function doGet(e) {
   if (action === 'lookup')       return lookupPhone(e.parameter.phone);
   if (action === 'availability') return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services, e.parameter.multiTech);
   if (action === 'book')         return bookAppointment(e.parameter);
+  if (action === 'checkin')      return checkInCustomer(e.parameter.phone);
   if (action === 'debug')        return debugInfo(e.parameter.technician, e.parameter.date);
   return json({ error: 'Unknown action' });
 }
@@ -73,7 +80,7 @@ function lookupPhone(phone) {
 
   for (let i = 1; i < rows.length; i++) {
     if (String(rows[i][0]).replace(/\D/g, '') === clean) {
-      const points      = parseInt(rows[i][4], 10) || 0;
+      const points       = parseInt(rows[i][4], 10) || 0;
       const pointsToFree = Math.max(0, FREE_PEDICURE_POINTS - points);
       return json({
         found:        true,
@@ -97,14 +104,12 @@ function lookupPhone(phone) {
 //
 // multiTech=true  → group booking: block by MAX service duration (simultaneous)
 // multiTech=false → solo booking:  block by SUM of service durations (sequential)
-//
-// Returns { unavailableSlots: [...] }
 function checkAvailability(technician, date, services, multiTech) {
   if (!technician || !date) return json({ unavailableSlots: [] });
 
-  const rows      = getApptRows();
-  const techs     = technician.split(',').map(function(t) { return t.trim(); });
-  const isMulti   = multiTech === 'true';
+  const rows    = getApptRows();
+  const techs   = technician.split(',').map(function(t) { return t.trim(); });
+  const isMulti = multiTech === 'true';
 
   function unavailableStarts(tech) {
     const existing = getUnavailableSlots(tech, date, rows);
@@ -132,6 +137,9 @@ function checkAvailability(technician, date, services, multiTech) {
 
 // GET ?action=book&phone=&firstName=&lastName=&email=&date=
 //     &technician=&time=&services=&multiTech=true
+//
+// Points are NOT awarded here — they are awarded at check-in.
+// Returns pointsPreview so the frontend can show "X points will be added at check-in."
 function bookAppointment(params) {
   const phone      = params.phone      || '';
   const firstName  = params.firstName  || '';
@@ -159,43 +167,110 @@ function bookAppointment(params) {
   if (bookedTechs.length > 0 && freeTechs.length > 0) {
     const next = findNextAvailable(bookedTechs[0], date, time, rows, services, isMulti);
     return json({
-      success: false, partialConflict: true,
-      bookedTechs: bookedTechs, freeTechs: freeTechs, nextAvailable: next,
-      error: bookedTechs.join(' and ') + ' is not available at ' + time + '. ' + freeTechs.join(' and ') + ' can see you at that time.',
+      success:         false,
+      partialConflict: true,
+      bookedTechs:     bookedTechs,
+      freeTechs:       freeTechs,
+      nextAvailable:   next,
+      error:           bookedTechs.join(' and ') + ' is not available at ' + time + '. ' + freeTechs.join(' and ') + ' can see you at that time.',
     });
   }
 
   if (bookedTechs.length === techs.length) {
     const next = findNextAvailable(technician, date, time, rows, services, isMulti);
     return json({
-      success: false, conflict: true, nextAvailable: next,
-      error: technician + ' is not available at ' + time + '.',
+      success:       false,
+      conflict:      true,
+      nextAvailable: next,
+      error:         technician + ' is not available at ' + time + '.',
     });
   }
 
-  // Calculate points earned
-  const pointsEarned = calcPoints(services);
+  // Preview points (awarded at check-in, not now)
+  const pointsPreview = calcPoints(services);
 
-  // Write appointment
+  // Write appointment with status 'pending'
   const apptSheet = getSheet(APPT_TAB);
   ensureApptHeader(apptSheet);
-  apptSheet.appendRow([phone, firstName, lastName, date, technician, time, services, email, pointsEarned, new Date().toISOString()]);
+  apptSheet.appendRow([
+    phone, firstName, lastName, date, technician,
+    time, services, email, pointsPreview, new Date().toISOString(), 'pending'
+  ]);
 
-  // Update customer record and get new total
-  const newTotal = upsertCustomer(phone, firstName, lastName, email, pointsEarned, date);
-  const pointsToFree = Math.max(0, FREE_PEDICURE_POINTS - newTotal);
+  // Upsert customer record (no points yet — just make sure they exist)
+  upsertCustomerNoPoints(phone, firstName, lastName, email);
 
-  // Send confirmation + reminder
-  sendConfirmation(email, phone, firstName, date, time, technician, services, newTotal, pointsToFree);
+  // Send confirmation email + SMS
+  sendConfirmation(email, phone, firstName, date, time, technician, services, pointsPreview);
+
+  // Schedule reminder
   scheduleReminder(email, phone, firstName, date, time, technician);
 
-  return json({
-    success:       true,
-    pointsEarned:  pointsEarned,
-    totalPoints:   newTotal,
-    pointsToFree:  pointsToFree,
-    freeReward:    newTotal >= FREE_PEDICURE_POINTS,
-  });
+  return json({ success: true, pointsPreview: pointsPreview });
+}
+
+// ── Check In ──────────────────────────────────────────────────────────────────
+
+// GET ?action=checkin&phone=7135551234
+// Finds today's appointment, marks it checked in, awards points.
+// Returns confirmation data including updated points balance.
+function checkInCustomer(phone) {
+  const clean = String(phone || '').replace(/\D/g, '');
+  if (!clean) return json({ found: false });
+
+  const today     = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  const apptSheet = getSheet(APPT_TAB);
+  const rows      = apptSheet.getDataRange().getDisplayValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    const rowPhone = String(rows[i][0]).replace(/\D/g, '');
+    const rowDate  = String(rows[i][3]).trim();
+    const status   = String(rows[i][10] || '').trim().toLowerCase();
+
+    if (rowPhone !== clean) continue;
+    if (rowDate  !== today) continue;
+
+    // Already checked in
+    if (status === 'checked in') {
+      return json({
+        found:            true,
+        alreadyCheckedIn: true,
+        firstName:        rows[i][1],
+      });
+    }
+
+    // Mark checked in
+    ensureStatusColumn(apptSheet);
+    apptSheet.getRange(i + 1, 11).setValue('checked in');
+
+    // Award points now
+    const services     = String(rows[i][6]);
+    const pointsEarned = calcPoints(services);
+    const firstName    = rows[i][1];
+    const lastName     = rows[i][2];
+    const email        = rows[i][7];
+    const technician   = rows[i][4];
+    const time         = rows[i][5];
+
+    const newTotal     = upsertCustomer(clean, firstName, lastName, email, pointsEarned, today);
+    const pointsToFree = Math.max(0, FREE_PEDICURE_POINTS - newTotal);
+
+    return json({
+      found:            true,
+      alreadyCheckedIn: false,
+      firstName:        firstName,
+      lastName:         lastName,
+      services:         services,
+      technician:       technician,
+      time:             time,
+      pointsEarned:     pointsEarned,
+      totalPoints:      newTotal,
+      pointsToFree:     pointsToFree,
+      freeReward:       newTotal >= FREE_PEDICURE_POINTS,
+    });
+  }
+
+  return json({ found: false });
 }
 
 // ── Time blocking ─────────────────────────────────────────────────────────────
@@ -236,7 +311,7 @@ function parseTotalDurationMax(servicesStr) {
   return Math.max.apply(null, matches.map(function(m) { return parseInt(m, 10); }));
 }
 
-// ── Unavailable slots for a technician ───────────────────────────────────────
+// ── Unavailable slots ─────────────────────────────────────────────────────────
 
 function getUnavailableSlots(technician, date, rows) {
   const isAny       = technician === 'Any Tech';
@@ -246,7 +321,6 @@ function getUnavailableSlots(technician, date, rows) {
     if (row[3] !== date) continue;
     const rowTechs = row[4].split(',').map(function(t) { return t.trim(); });
     if (!isAny && !rowTechs.includes('Any Tech') && !rowTechs.includes(technician)) continue;
-    // Use sum blocking for existing bookings (most conservative)
     getBlockedSlotsSum(row[5], row[6]).forEach(function(s) { unavailable.add(s); });
   }
 
@@ -280,6 +354,7 @@ function calcPoints(servicesStr) {
   return total > 0 ? total : DEFAULT_POINTS;
 }
 
+// Full upsert — awards points (used at check-in)
 function upsertCustomer(phone, firstName, lastName, email, pointsEarned, visitDate) {
   const sheet = getSheet(CUSTOMER_TAB);
   ensureCustomerHeader(sheet);
@@ -300,58 +375,65 @@ function upsertCustomer(phone, firstName, lastName, email, pointsEarned, visitDa
     }
   }
 
-  // New customer
   sheet.appendRow([clean, firstName, lastName, email, pointsEarned, 1, visitDate]);
   return pointsEarned;
 }
 
-// ── Notifications ─────────────────────────────────────────────────────────────
+// Lightweight upsert — no points, just ensures customer record exists (used at booking)
+function upsertCustomerNoPoints(phone, firstName, lastName, email) {
+  const sheet = getSheet(CUSTOMER_TAB);
+  ensureCustomerHeader(sheet);
+  const rows  = sheet.getDataRange().getDisplayValues();
+  const clean = String(phone).replace(/\D/g, '');
 
-function sendConfirmation(email, phone, firstName, date, time, technician, services, totalPoints, pointsToFree) {
-  const subject = 'Your appointment at ' + SALON_NAME + ' is confirmed!';
-  let body = 'Hi ' + firstName + ',\n\n'
-    + 'Your appointment is confirmed:\n'
-    + '  Date: ' + formatDate(date) + '\n'
-    + '  Time: ' + time + '\n'
-    + '  Technician: ' + technician + '\n'
-    + '  Services: ' + services + '\n\n'
-    + 'Rewards: You now have ' + totalPoints + ' points.\n';
-
-  if (pointsToFree <= 0) {
-    body += 'You have earned a FREE pedicure! Mention this at your next visit.\n';
-  } else {
-    body += 'You need ' + pointsToFree + ' more points for a free pedicure.\n';
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).replace(/\D/g, '') === clean) {
+      sheet.getRange(i + 1, 2).setValue(firstName);
+      sheet.getRange(i + 1, 3).setValue(lastName);
+      if (email) sheet.getRange(i + 1, 4).setValue(email);
+      return;
+    }
   }
 
-  body += '\nQuestions? Call us at ' + SALON_PHONE + '.\n\nSee you soon!\n' + SALON_NAME;
+  // New customer — 0 points until first check-in
+  sheet.appendRow([clean, firstName, lastName, email, 0, 0, '']);
+}
 
-  // Email confirmation
+// ── Notifications ─────────────────────────────────────────────────────────────
+
+function sendConfirmation(email, phone, firstName, date, time, technician, services, pointsPreview) {
+  const subject = 'Your appointment at ' + SALON_NAME + ' is confirmed!';
+  const body    = 'Hi ' + firstName + ',\n\n'
+    + 'Your appointment is confirmed:\n'
+    + '  Date: '       + formatDate(date) + '\n'
+    + '  Time: '       + time + '\n'
+    + '  Technician: ' + technician + '\n'
+    + '  Services: '   + services + '\n\n'
+    + pointsPreview + ' reward points will be added to your account when you check in.\n'
+    + '\nQuestions? Call us at ' + SALON_PHONE + '.\n\nSee you soon!\n' + SALON_NAME;
+
   if (email) {
     try { GmailApp.sendEmail(email, subject, body); } catch(e) {}
   }
 
-  // SMS via email-to-carrier gateway
   if (phone) {
     const smsAddress = String(phone).replace(/\D/g, '') + CARRIER_GATEWAY;
-    const smsBody    = SALON_NAME + ': Appt confirmed ' + formatDate(date) + ' at ' + time
-      + ' with ' + technician + '. Points: ' + totalPoints
-      + (pointsToFree <= 0 ? ' - FREE pedicure earned!' : ' (' + pointsToFree + ' to free pedicure).')
-      + ' Questions? ' + SALON_PHONE;
+    const smsBody    = SALON_NAME + ': Confirmed ' + formatDate(date) + ' at ' + time
+      + ' with ' + technician + '. Check in when you arrive to earn '
+      + pointsPreview + ' points! ' + SALON_PHONE;
     try { GmailApp.sendEmail(smsAddress, '', smsBody); } catch(e) {}
   }
 }
 
 function scheduleReminder(email, phone, firstName, date, time, technician) {
-  // Store reminder details in a Reminders tab — a time-based trigger fires daily
-  // and sends reminders for appointments the next day.
   const sheet = getSheet('Reminders');
   ensureReminderHeader(sheet);
   sheet.appendRow([date, time, firstName, email, phone, technician, 'pending']);
 }
 
 // ── Daily reminder trigger ────────────────────────────────────────────────────
-// Set up: Apps Script → Triggers → Add trigger → sendDailyReminders
-// Trigger type: Time-driven → Day timer → any hour
+// Set up: Apps Script → Triggers → Add trigger
+//   Function: sendDailyReminders | Time-driven → Day timer
 
 function sendDailyReminders() {
   const sheet    = getSheet('Reminders');
@@ -369,15 +451,13 @@ function sendDailyReminders() {
     const technician = rows[i][5];
 
     const subject = 'Reminder: Your appointment tomorrow at ' + SALON_NAME;
-    const body    = 'Hi ' + firstName + ',\n\nJust a reminder that you have an appointment tomorrow:\n'
-      + '  Date: ' + formatDate(tomorrow) + '\n'
-      + '  Time: ' + time + '\n'
+    const body    = 'Hi ' + firstName + ',\n\nReminder — you have an appointment tomorrow:\n'
+      + '  Date: '       + formatDate(tomorrow) + '\n'
+      + '  Time: '       + time + '\n'
       + '  Technician: ' + technician + '\n\n'
       + 'Need to reschedule? Call us at ' + SALON_PHONE + '.\n\nSee you soon!\n' + SALON_NAME;
 
-    if (email) {
-      try { GmailApp.sendEmail(email, subject, body); } catch(e) {}
-    }
+    if (email) { try { GmailApp.sendEmail(email, subject, body); } catch(e) {} }
     if (phone) {
       const smsAddress = String(phone).replace(/\D/g, '') + CARRIER_GATEWAY;
       const smsBody    = SALON_NAME + ' reminder: Tomorrow ' + time + ' with ' + technician + '. Questions? ' + SALON_PHONE;
@@ -420,7 +500,8 @@ function timeToMinutes(timeVal) {
 function formatDate(dateStr) {
   try {
     const [y, m, d] = dateStr.split('-');
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const months = ['January','February','March','April','May','June','July',
+                    'August','September','October','November','December'];
     return months[parseInt(m, 10) - 1] + ' ' + parseInt(d, 10) + ', ' + y;
   } catch (_) { return dateStr; }
 }
@@ -434,7 +515,7 @@ function getTomorrowDate() {
 // ── Sheet helpers ─────────────────────────────────────────────────────────────
 
 function getSheet(tabName) {
-  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  const ss = SpreadsheetApp.openById(SHEET_ID);
   return ss.getSheetByName(tabName) || ss.insertSheet(tabName);
 }
 
@@ -450,7 +531,10 @@ function getApptRows() {
 
 function ensureApptHeader(sheet) {
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['Phone','First Name','Last Name','Date','Technician','Time','Services','Email','Points','Submitted At']);
+    sheet.appendRow([
+      'Phone','First Name','Last Name','Date','Technician',
+      'Time','Services','Email','Points Preview','Submitted At','Status'
+    ]);
   }
 }
 
@@ -466,6 +550,13 @@ function ensureReminderHeader(sheet) {
   }
 }
 
+function ensureStatusColumn(sheet) {
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  if (!headers.includes('Status')) {
+    sheet.getRange(1, sheet.getLastColumn() + 1).setValue('Status');
+  }
+}
+
 function json(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
@@ -477,7 +568,14 @@ function json(obj) {
 function debugInfo(technician, date) {
   const rows     = getApptRows();
   const rowsData = rows.map(function(r) {
-    return { phone: String(r[0]), date: String(r[3]), tech: String(r[4]), time: String(r[5]), services: String(r[6]) };
+    return {
+      phone:    String(r[0]),
+      date:     String(r[3]),
+      tech:     String(r[4]),
+      time:     String(r[5]),
+      services: String(r[6]),
+      status:   String(r[10] || ''),
+    };
   });
   let unavailable = [];
   if (technician && date) {

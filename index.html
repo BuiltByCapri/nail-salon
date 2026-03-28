@@ -494,7 +494,7 @@
     btn.disabled = true; btn.textContent = 'Checking…';
 
     try {
-      const params = new URLSearchParams({ action: 'waittime', services });
+      const params = new URLSearchParams({ action: 'walkin', phone: currentPhone, services, technician: walkinTech });
       const res  = await fetch(`${SCRIPT_URL}?${params}`);
       const data = await res.json();
 

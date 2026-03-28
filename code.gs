@@ -63,6 +63,7 @@ function doGet(e) {
   if (action === 'availability') return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services, e.parameter.multiTech);
   if (action === 'book')         return bookAppointment(e.parameter);
   if (action === 'checkin')      return checkInCustomer(e.parameter.phone);
+  if (action === 'walkin')       return recordWalkIn(e.parameter);
   if (action === 'waittime')     return getWaitTime(e.parameter.services);
   if (action === 'debug')        return debugInfo(e.parameter.technician, e.parameter.date);
   return json({ error: 'Unknown action' });
@@ -272,6 +273,51 @@ function checkInCustomer(phone) {
   }
 
   return json({ found: false });
+}
+
+// ── Walk-In ───────────────────────────────────────────────────────────────────
+
+// GET ?action=walkin&phone=&services=&technician=
+// Records the walk-in row, awards half points, and returns wait time.
+function recordWalkIn(params) {
+  const phone      = String(params.phone      || '').replace(/\D/g, '');
+  const services   = params.services   || '';
+  const technician = params.technician || 'Any Tech';
+
+  const tz    = Session.getScriptTimeZone();
+  const today = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
+  const now   = Utilities.formatDate(new Date(), tz, 'h:mm a');
+
+  const pointsEarned = calcWalkInPoints(services);
+
+  // Write appointment row with status 'walk-in'
+  const apptSheet = getSheet(APPT_TAB);
+  ensureApptHeader(apptSheet);
+  apptSheet.appendRow([
+    phone, '', '', today, technician,
+    now, services, '', pointsEarned, new Date().toISOString(), 'walk-in'
+  ]);
+
+  // Award points — upsert customer record by phone
+  const newTotal = upsertCustomer(phone, '', '', '', pointsEarned, today);
+
+  // Count currently checked-in appointments for wait estimate
+  const rows = apptSheet.getDataRange().getDisplayValues();
+  let checkedInCount = 0;
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][3]).trim() === today &&
+        String(rows[i][10] || '').trim().toLowerCase() === 'checked in') {
+      checkedInCount++;
+    }
+  }
+
+  return json({
+    success:              true,
+    pointsEarned:         pointsEarned,
+    totalPoints:          newTotal,
+    checkedInCount:       checkedInCount,
+    estimatedWaitMinutes: checkedInCount * 30,
+  });
 }
 
 // ── Wait Time ─────────────────────────────────────────────────────────────────

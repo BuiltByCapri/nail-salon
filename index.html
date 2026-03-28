@@ -1,26 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> Nails &amp; Spa · Houston</title>
+  <title>SALON NAME · Houston</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ============================================================
+       CUSTOMIZE THESE VALUES FOR EACH CLIENT
+       ============================================================ */
     :root {
-      --bg:        #fdf0ec;
-      --text:      #8a5a42;
-      --accent:    #b87a5a;
-      --accent-lt: #c9956a;
-      --floral:    #f2bfb5;
-      --card-bg:   #fff9f7;
-      --border:    #e8c9bc;
+      --bg:        #fdf0ec;   /* page background */
+      --text:      #8a5a42;   /* body text */
+      --accent:    #b87a5a;   /* primary accent (buttons, headings) */
+      --accent-lt: #c9956a;   /* light accent (subtext, icons) */
+      --floral:    #f2bfb5;   /* decorative color (stars, dividers) */
+      --card-bg:   #fff9f7;   /* card background */
+      --border:    #e8c9bc;   /* border color */
       --white:     #ffffff;
     }
+    /* ============================================================ */
 
     body {
       font-family: 'Jost', sans-serif;
@@ -76,17 +79,11 @@
       letter-spacing: 0.04em;
       line-height: 1.9;
     }
-    .header-info a {
-      color: var(--accent-lt);
-      text-decoration: none;
-    }
+    .header-info a { color: var(--accent-lt); text-decoration: none; }
     .header-info a:hover { text-decoration: underline; }
 
     /* ─── MAIN ─── */
-    main {
-      flex: 1;
-      padding: 2.5rem 1.5rem 3rem;
-    }
+    main { flex: 1; padding: 2.5rem 1.5rem 3rem; }
 
     /* ─── CARD ─── */
     .card {
@@ -97,7 +94,7 @@
       width: 100%;
       max-width: 600px;
       margin: 0 auto;
-      padding: 2rem 2rem;
+      padding: 2rem;
       box-sizing: border-box;
     }
     .card-title {
@@ -148,17 +145,11 @@
     input[type="text"]:focus,
     input[type="tel"]:focus,
     input[type="date"]:focus,
-    textarea:focus {
-      border-color: var(--accent);
-    }
+    textarea:focus { border-color: var(--accent); }
     input::placeholder { color: #c9b0a4; }
 
     /* ─── 2-COL GRID ─── */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
     /* ─── NOTICE ─── */
     .notice {
@@ -184,12 +175,7 @@
       color: var(--text);
       margin-bottom: 0.6rem;
     }
-    .pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.1rem;
-    }
+    .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.1rem; }
     .pill {
       padding: 0.42rem 1rem;
       border-radius: 20px;
@@ -204,27 +190,13 @@
       transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
     .pill:hover { border-color: var(--accent-lt); }
-    .pill.selected {
-      background: var(--accent);
-      color: #fff9f7;
-      border-color: var(--accent);
-    }
-    .pill-duration {
-      font-size: 0.72rem;
-      font-weight: 300;
-      opacity: 0.8;
-    }
-    .other-input-wrap {
-      display: none;
-      margin-bottom: 1.1rem;
-    }
+    .pill.selected { background: var(--accent); color: #fff9f7; border-color: var(--accent); }
+    .pill-duration { font-size: 0.72rem; font-weight: 300; opacity: 0.8; }
+    .other-input-wrap { display: none; margin-bottom: 1.1rem; }
     .other-input-wrap.visible { display: block; }
 
-    /* ─── CUSTOM DROPDOWN (shared) ─── */
-    .custom-dropdown {
-      position: relative;
-      margin-bottom: 1.1rem;
-    }
+    /* ─── CUSTOM DROPDOWN ─── */
+    .custom-dropdown { position: relative; margin-bottom: 1.1rem; }
     .dropdown-trigger {
       display: flex;
       align-items: center;
@@ -255,8 +227,7 @@
       display: none;
       position: absolute;
       top: calc(100% + 4px);
-      left: 0;
-      right: 0;
+      left: 0; right: 0;
       background: var(--white);
       border: 0.5px solid var(--border);
       border-radius: 8px;
@@ -279,11 +250,8 @@
     }
     .dropdown-option:hover { background: var(--bg); }
     .dropdown-option.selected-opt { color: var(--accent); font-weight: 400; }
-
-    /* checkboxes inside multi-select */
     .opt-check {
-      width: 14px;
-      height: 14px;
+      width: 14px; height: 14px;
       border: 0.5px solid var(--border);
       border-radius: 3px;
       background: var(--white);
@@ -293,33 +261,20 @@
       justify-content: center;
       transition: background 0.15s, border-color 0.15s;
     }
-    .dropdown-option.selected-opt .opt-check {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
+    .dropdown-option.selected-opt .opt-check { background: var(--accent); border-color: var(--accent); }
     .opt-check::after {
       content: '';
       display: none;
-      width: 5px;
-      height: 3px;
+      width: 5px; height: 3px;
       border-left: 1.5px solid #fff9f7;
       border-bottom: 1.5px solid #fff9f7;
       transform: rotate(-45deg) translateY(-1px);
     }
     .dropdown-option.selected-opt .opt-check::after { display: block; }
-
-    /* single-select time: no checkbox, highlight row */
-    .dropdown-option.time-opt.selected-opt {
-      background: #fde8df;
-      font-weight: 500;
-    }
+    .dropdown-option.time-opt.selected-opt { background: #fde8df; font-weight: 500; }
 
     /* ─── APPOINTMENT BLOCK ─── */
-    .appt-block + .appt-block {
-      margin-top: 1.8rem;
-      padding-top: 1.8rem;
-      border-top: 0.5px solid var(--border);
-    }
+    .appt-block + .appt-block { margin-top: 1.8rem; padding-top: 1.8rem; border-top: 0.5px solid var(--border); }
     .appt-block-label {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
@@ -329,13 +284,7 @@
     }
 
     /* ─── BUTTONS ─── */
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      align-items: center;
-      margin-top: 1.8rem;
-    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; margin-top: 1.8rem; }
     .btn {
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -349,21 +298,10 @@
       text-transform: uppercase;
     }
     .btn:hover { opacity: 0.85; transform: translateY(-1px); }
-    .btn-primary {
-      background: var(--accent);
-      color: #fff9f7;
-    }
-    .btn-ghost {
-      background: transparent;
-      color: var(--accent);
-      border: 0.5px solid var(--border);
-    }
+    .btn-primary { background: var(--accent); color: #fff9f7; }
+    .btn-ghost { background: transparent; color: var(--accent); border: 0.5px solid var(--border); }
     .btn-ghost:hover { border-color: var(--accent); }
-    .btn-cancel {
-      background: transparent;
-      color: var(--accent-lt);
-      border: 0.5px solid var(--border);
-    }
+    .btn-cancel { background: transparent; color: var(--accent-lt); border: 0.5px solid var(--border); }
     .btn-cancel:hover { border-color: var(--accent-lt); }
     .btn-continue {
       width: 100%;
@@ -373,18 +311,7 @@
       padding: 0.75rem;
       font-size: 0.88rem;
     }
-
-    /* ─── BOOKED TIME SLOT ─── */
-    .dropdown-option.time-opt.booked {
-      color: #cbb8b0;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-    .dropdown-option.time-opt.booked::after {
-      content: ' · taken';
-      font-size: 0.75rem;
-      opacity: 0.7;
-    }
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
 
     /* ─── ERROR BANNER ─── */
     .error-banner {
@@ -399,9 +326,6 @@
       margin-bottom: 1.2rem;
     }
     .error-banner.visible { display: block; }
-
-    /* ─── INLINE LOADING STATE ─── */
-    .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
 
     /* ─── STEPS ─── */
     #step-phone   { display: block; }
@@ -418,13 +342,7 @@
     .booking-meta .card-sub   { margin-bottom: 0; }
 
     /* ─── CONFIRMATION ─── */
-    .confirm-star {
-      font-size: 1rem;
-      color: var(--floral);
-      letter-spacing: 0.4em;
-      margin-bottom: 0.8rem;
-      display: block;
-    }
+    .confirm-star { font-size: 1rem; color: var(--floral); letter-spacing: 0.4em; margin-bottom: 0.8rem; display: block; }
     .confirm-title {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
@@ -432,16 +350,8 @@
       color: var(--accent);
       margin-bottom: 1.4rem;
     }
-    .confirm-summary {
-      font-size: 0.88rem;
-      font-weight: 300;
-      line-height: 2;
-      color: var(--text);
-    }
-    .confirm-summary strong {
-      font-weight: 500;
-      color: var(--accent);
-    }
+    .confirm-summary { font-size: 0.88rem; font-weight: 300; line-height: 2; color: var(--text); }
+    .confirm-summary strong { font-weight: 500; color: var(--accent); }
 
     /* ─── FOOTER ─── */
     footer {
@@ -454,7 +364,6 @@
       border-top: 0.5px solid var(--border);
     }
 
-    /* nested dropdown loses its own bottom margin — form-group provides it */
     .form-group .custom-dropdown { margin-bottom: 0; }
 
     @media (max-width: 520px) {
@@ -468,18 +377,18 @@
 <body>
 
 <!-- ─── HEADER ─── -->
+<!-- CUSTOMIZE: Replace logo.jpg with client's logo file -->
 <header>
-  <img src="logo.jpg" alt="logo &amp; Spa" class="header-logo" onerror="this.style.display='none'" />
-  <div class="header-brand-name"></div>
+  <img src="logo.jpg" alt="Salon Logo" class="header-logo" onerror="this.style.display='none'" />
+  <div class="header-brand-name"><!-- SALON NAME --></div>
   <div class="header-subtitle">Nails &amp; Spa</div>
   <div class="header-sep">✦ &nbsp; ✦ &nbsp; ✦</div>
   <div class="header-info">
-   Address &nbsp;✦&nbsp; Houston, TX 77027<br>
-    <a href="tel:+17136226245">(123) 456-7785</a>
+    <!-- STREET ADDRESS --> &nbsp;✦&nbsp; <!-- CITY, STATE ZIP --><br>
+    <a href="tel:+1XXXXXXXXXX">(XXX) XXX-XXXX</a>
   </div>
 </header>
 
-<!-- ─── MAIN ─── -->
 <main>
 
   <!-- STEP 1: PHONE GATE -->
@@ -489,7 +398,7 @@
       <div class="card-sub">Enter your phone number to get started</div>
       <div class="form-group">
         <label for="phone-input">Phone Number</label>
-        <input type="tel" id="phone-input" placeholder="(713) 555-0000" maxlength="14" />
+        <input type="tel" id="phone-input" placeholder="(XXX) XXX-XXXX" maxlength="14" />
       </div>
       <button class="btn btn-continue" onclick="handlePhoneContinue()">Continue</button>
     </div>
@@ -497,17 +406,15 @@
 
   <!-- STEP 2: BOOKING FORM -->
   <div id="step-booking">
-    <!-- Title, sub, notice live ABOVE the card -->
     <div class="booking-meta">
       <div class="card-title" id="booking-title">Book your visit</div>
-      <div class="card-sub"> Nails &amp; Spa · Houston</div>
+      <div class="card-sub"><!-- SALON NAME --> · <!-- CITY --></div>
     </div>
     <div class="notice">
       Please note: appointments require at least 24 hours advance notice. Same-day requests may be accommodated based on availability — feel free to call us.
     </div>
 
     <div class="card">
-      <!-- Name: 2-col grid for first + last only -->
       <div class="grid-2">
         <div class="form-group">
           <label for="first-name">First Name</label>
@@ -519,18 +426,17 @@
         </div>
       </div>
 
-      <!-- Date -->
       <div class="form-group">
         <label for="appt-date">Preferred Date</label>
         <input type="date" id="appt-date" />
       </div>
 
-      <!-- Appointment blocks container -->
       <div id="appt-blocks-container">
         <div class="appt-block" id="appt-block-1" data-index="1">
-          <!-- Services -->
+
           <div class="pills-label">Services</div>
           <div class="pills" id="pills-1">
+            <!-- CUSTOMIZE: Add/remove services as needed -->
             <span class="pill" data-service="Pedicure"      data-dur="45min" onclick="togglePill(this,1)">Pedicure <span class="pill-duration">45min</span></span>
             <span class="pill" data-service="Manicure"      data-dur="30min" onclick="togglePill(this,1)">Manicure <span class="pill-duration">30min</span></span>
             <span class="pill" data-service="Gel Manicure"  data-dur="30min" onclick="togglePill(this,1)">Gel Manicure <span class="pill-duration">30min</span></span>
@@ -548,7 +454,7 @@
             </div>
           </div>
 
-          <!-- Technician multi-select -->
+          <!-- CUSTOMIZE: Replace Tech 1–4 with real technician names -->
           <div class="form-group">
             <label>Technician</label>
             <div class="custom-dropdown" id="tech-dropdown-1">
@@ -558,15 +464,14 @@
               </div>
               <div class="dropdown-list" id="tech-list-1">
                 <div class="dropdown-option selected-opt" data-value="Any Tech" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Any Tech</div>
-                <div class="dropdown-option" data-value="Bae"     onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 1</div>
-                <div class="dropdown-option" data-value="Hannah"  onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 2</div>
-                <div class="dropdown-option" data-value="Jessica" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 3</div>
-                <div class="dropdown-option" data-value="Kim"     onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 4</div>
+                <div class="dropdown-option" data-value="Tech 1" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 1</div>
+                <div class="dropdown-option" data-value="Tech 2" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 2</div>
+                <div class="dropdown-option" data-value="Tech 3" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 3</div>
+                <div class="dropdown-option" data-value="Tech 4" onclick="toggleTech(this,'tech-dropdown-1')"><span class="opt-check"></span> Tech 4</div>
               </div>
             </div>
           </div>
 
-          <!-- Time single-select -->
           <div class="form-group">
             <label>Preferred Time</label>
             <div class="custom-dropdown" id="time-dropdown-1">
@@ -577,13 +482,12 @@
               <div class="dropdown-list" id="time-list-1"></div>
             </div>
           </div>
+
         </div>
       </div>
 
-      <!-- Generic error (network failure etc.) -->
       <div class="error-banner" id="booking-error"></div>
 
-      <!-- Buttons -->
       <div class="btn-row">
         <button class="btn btn-ghost"   onclick="addAppointment()">+ Add another appointment</button>
         <button class="btn btn-cancel"  onclick="cancelBooking()">Cancel</button>
@@ -606,21 +510,22 @@
 
 </main>
 
-<!-- ─── FOOTER ─── -->
-<footer>© 2026 Nails &amp; Spa &nbsp;·&nbsp; Houston, TX</footer>
+<footer>© 2026 <!-- SALON NAME --> &nbsp;·&nbsp; <!-- CITY, STATE --></footer>
 
 <script>
-  // ── Config ──
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweEpavxdcWNjpg_1hUC2xsq-rSaSDkg5eTykTZiT1QEyZ3_equDZSGfVR6oc8Ob7lQ/exec';
+  // ============================================================
+  // CUSTOMIZE: Paste your Google Apps Script deployment URL here
+  // ============================================================
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+  // ============================================================
 
-  // ── State ──
-  let apptCount     = 1;
-  let currentPhone  = '';
-  const techSelections  = { 1: ['Any Tech'] };
-  const timeSelections  = { 1: null };
+  let apptCount      = 1;
+  let currentPhone   = '';
+  const techSelections   = { 1: ['Any Tech'] };
+  const timeSelections   = { 1: null };
   const unavailableSlots = { 1: new Set() };
 
-  // ── Phone formatting ──
+  // Phone formatting
   document.getElementById('phone-input').addEventListener('input', function () {
     let v = this.value.replace(/\D/g, '').slice(0, 10);
     if (v.length >= 7)      v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
@@ -629,15 +534,12 @@
     this.value = v;
   });
 
-  // ── Step 1: phone gate ──
+  // Step 1: phone lookup
   async function handlePhoneContinue() {
     const raw = document.getElementById('phone-input').value.replace(/\D/g, '');
     currentPhone = raw;
-
     const btn = document.querySelector('#step-phone .btn-continue');
-    btn.disabled = true;
-    btn.textContent = 'Looking up…';
-
+    btn.disabled = true; btn.textContent = 'Looking up…';
     try {
       const res  = await fetch(`${SCRIPT_URL}?action=lookup&phone=${encodeURIComponent(raw)}`);
       const data = await res.json();
@@ -655,61 +557,52 @@
       document.getElementById('last-name').value  = '';
       document.getElementById('booking-title').textContent = 'Welcome';
     }
-
-    btn.disabled    = false;
-    btn.textContent = 'Continue';
-
+    btn.disabled = false; btn.textContent = 'Continue';
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     document.getElementById('appt-date').min = tomorrow.toISOString().split('T')[0];
-
-    show('step-booking');
-    hide('step-phone');
+    show('step-booking'); hide('step-phone');
   }
 
-  // ── Service pills ──
+  // Service pills
   function togglePill(el, idx) {
     el.classList.toggle('selected');
     const wrap = document.getElementById('other-wrap-' + idx);
     const hasOther = !!document.querySelector('#pills-' + idx + ' .pill[data-service="Other"].selected');
     if (wrap) wrap.classList.toggle('visible', hasOther);
-    // Re-check availability since duration affects which start times are open.
     triggerAvailabilityCheck(idx);
   }
 
-  // ── Availability checking ──
   function getSelectedServices(idx) {
     const block = document.getElementById('appt-block-' + idx);
     if (!block) return '';
     return [...block.querySelectorAll('.pill.selected')].map(p => {
-      const svc = p.dataset.service;
-      if (svc === 'Other') {
+      if (p.dataset.service === 'Other') {
         const desc = document.getElementById('other-text-' + idx)?.value.trim();
         return desc ? `Other (${desc}) ${p.dataset.dur}` : `Other ${p.dataset.dur}`;
       }
-      return `${svc} ${p.dataset.dur}`;
+      return `${p.dataset.service} ${p.dataset.dur}`;
     }).join(', ');
   }
 
+  // Availability
   async function fetchAvailability(technician, date, idx) {
     idx = idx || 1;
     if (!technician || !date) return;
-    const services = getSelectedServices(idx);
     try {
       const params = new URLSearchParams({ action: 'availability', technician, date });
+      const services = getSelectedServices(idx);
       if (services) params.set('services', services);
       const res  = await fetch(`${SCRIPT_URL}?${params}`);
       const data = await res.json();
       unavailableSlots[idx] = new Set(data.unavailableSlots || []);
       rebuildTimeList(idx);
-    } catch (_) { /* silently skip if offline */ }
+    } catch (_) {}
   }
 
-  // Clear and re-render the time list, excluding unavailable slots entirely.
   function rebuildTimeList(idx) {
     const listEl = document.getElementById('time-list-' + idx);
     if (!listEl) return;
-    // If the currently selected time became unavailable, clear it
     if (timeSelections[idx] && unavailableSlots[idx].has(timeSelections[idx])) {
       timeSelections[idx] = null;
       const disp = document.getElementById('time-display-' + idx);
@@ -727,27 +620,21 @@
     if (date) fetchAvailability(techs.join(', '), date, idx);
   }
 
-  // Wire date change
   document.getElementById('appt-date').addEventListener('change', triggerAvailabilityCheck);
 
-  // ── Dropdown open/close ──
+  // Dropdown open/close
   function toggleDropdown(id) {
-    const dd = document.getElementById(id);
+    const dd      = document.getElementById(id);
     const trigger = dd.querySelector('.dropdown-trigger');
     const list    = dd.querySelector('.dropdown-list');
     const isOpen  = list.classList.contains('open');
-    // Close all dropdowns
     document.querySelectorAll('.dropdown-list.open').forEach(l => {
       l.classList.remove('open');
       l.closest('.custom-dropdown').querySelector('.dropdown-trigger').classList.remove('open');
     });
-    if (!isOpen) {
-      list.classList.add('open');
-      trigger.classList.add('open');
-    }
+    if (!isOpen) { list.classList.add('open'); trigger.classList.add('open'); }
   }
 
-  // Close dropdowns on outside click
   document.addEventListener('click', function (e) {
     if (!e.target.closest('.custom-dropdown')) {
       document.querySelectorAll('.dropdown-list.open').forEach(l => {
@@ -757,60 +644,36 @@
     }
   });
 
-  // ── Technician multi-select ──
+  // Technician multi-select
   function toggleTech(optEl, ddId) {
     const dd  = document.getElementById(ddId);
     const idx = parseInt(ddId.replace('tech-dropdown-', ''));
     const val = optEl.dataset.value;
     let sel   = techSelections[idx] || [];
-
     if (val === 'Any Tech') {
-      // Toggle Any Tech: deselect all specific
-      if (optEl.classList.contains('selected-opt')) {
-        optEl.classList.remove('selected-opt');
-        sel = [];
-      } else {
-        dd.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('selected-opt'));
-        optEl.classList.add('selected-opt');
-        sel = ['Any Tech'];
-      }
+      if (optEl.classList.contains('selected-opt')) { optEl.classList.remove('selected-opt'); sel = []; }
+      else { dd.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('selected-opt')); optEl.classList.add('selected-opt'); sel = ['Any Tech']; }
     } else {
-      // Deselect "Any Tech" if a specific is chosen
       const anyOpt = dd.querySelector('[data-value="Any Tech"]');
       anyOpt.classList.remove('selected-opt');
       sel = sel.filter(s => s !== 'Any Tech');
-
-      if (optEl.classList.contains('selected-opt')) {
-        optEl.classList.remove('selected-opt');
-        sel = sel.filter(s => s !== val);
-      } else {
-        optEl.classList.add('selected-opt');
-        sel.push(val);
-      }
-
-      // If nothing selected, fall back to Any Tech
-      if (sel.length === 0) {
-        anyOpt.classList.add('selected-opt');
-        sel = ['Any Tech'];
-      }
+      if (optEl.classList.contains('selected-opt')) { optEl.classList.remove('selected-opt'); sel = sel.filter(s => s !== val); }
+      else { optEl.classList.add('selected-opt'); sel.push(val); }
+      if (sel.length === 0) { anyOpt.classList.add('selected-opt'); sel = ['Any Tech']; }
     }
-
     techSelections[idx] = sel;
     const display = document.getElementById('tech-display-' + idx);
     display.textContent = sel.join(', ');
-    display.classList.toggle('placeholder', false);
-
-    if (idx === 1) triggerAvailabilityCheck();
+    display.classList.remove('placeholder');
+    triggerAvailabilityCheck(idx);
   }
 
-  // ── Time single-select ──
+  // Time single-select
   function buildTimeList(idx) {
     const listEl = document.getElementById('time-list-' + idx);
     if (!listEl || listEl.dataset.built) return;
     listEl.dataset.built = '1';
-
     const blocked = unavailableSlots[idx] || new Set();
-
     for (let h = 9; h <= 21; h++) {
       for (let m = 0; m < 60; m += 15) {
         if (h === 21 && m > 0) break;
@@ -818,7 +681,7 @@
         const hour = h % 12 === 0 ? 12 : h % 12;
         const min  = m === 0 ? '00' : m;
         const t    = `${hour}:${min} ${ampm}`;
-        if (blocked.has(t)) continue; // omit unavailable slots entirely
+        if (blocked.has(t)) continue;
         const opt = document.createElement('div');
         opt.className = 'dropdown-option time-opt';
         opt.textContent = t;
@@ -834,31 +697,27 @@
     listEl.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected-opt'));
     optEl.classList.add('selected-opt');
     timeSelections[idx] = optEl.dataset.value;
-
     const display = document.getElementById('time-display-' + idx);
     display.textContent = optEl.dataset.value;
     display.classList.remove('placeholder');
-
-    // Close dropdown
     const dd = document.getElementById('time-dropdown-' + idx);
     dd.querySelector('.dropdown-list').classList.remove('open');
     dd.querySelector('.dropdown-trigger').classList.remove('open');
   }
 
-  // ── Add appointment ──
+  // Add appointment block
   function addAppointment() {
     apptCount++;
     const idx = apptCount;
-    techSelections[idx] = ['Any Tech'];
-    timeSelections[idx] = null;
-
+    techSelections[idx]   = ['Any Tech'];
+    timeSelections[idx]   = null;
+    unavailableSlots[idx] = new Set();
     const block = document.createElement('div');
     block.className = 'appt-block';
     block.id = 'appt-block-' + idx;
     block.dataset.index = idx;
     block.innerHTML = `
       <div class="appt-block-label">Appointment ${idx}</div>
-
       <div class="pills-label">Services</div>
       <div class="pills" id="pills-${idx}">
         <span class="pill" data-service="Pedicure"      data-dur="45min" onclick="togglePill(this,${idx})">Pedicure <span class="pill-duration">45min</span></span>
@@ -873,11 +732,8 @@
         <span class="pill" data-service="Other"         data-dur="15min" onclick="togglePill(this,${idx})">Other <span class="pill-duration">15min</span></span>
       </div>
       <div class="other-input-wrap" id="other-wrap-${idx}">
-        <div class="form-group">
-          <input type="text" id="other-text-${idx}" placeholder="Describe your service request…" />
-        </div>
+        <div class="form-group"><input type="text" id="other-text-${idx}" placeholder="Describe your service request…" /></div>
       </div>
-
       <div class="form-group">
         <label>Technician</label>
         <div class="custom-dropdown" id="tech-dropdown-${idx}">
@@ -886,15 +742,14 @@
             <span class="dropdown-caret">▼</span>
           </div>
           <div class="dropdown-list" id="tech-list-${idx}">
-            <div class="dropdown-option selected-opt" data-value="Any Tech"  onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Any Tech</div>
-            <div class="dropdown-option"              data-value="Bae"       onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Bae</div>
-            <div class="dropdown-option"              data-value="Hannah"    onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Hannah</div>
-            <div class="dropdown-option"              data-value="Jessica"   onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Jessica</div>
-            <div class="dropdown-option"              data-value="Kim"       onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Kim</div>
+            <div class="dropdown-option selected-opt" data-value="Any Tech" onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Any Tech</div>
+            <div class="dropdown-option" data-value="Tech 1" onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Tech 1</div>
+            <div class="dropdown-option" data-value="Tech 2" onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Tech 2</div>
+            <div class="dropdown-option" data-value="Tech 3" onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Tech 3</div>
+            <div class="dropdown-option" data-value="Tech 4" onclick="toggleTech(this,'tech-dropdown-${idx}')"><span class="opt-check"></span> Tech 4</div>
           </div>
         </div>
       </div>
-
       <div class="form-group">
         <label>Preferred Time</label>
         <div class="custom-dropdown" id="time-dropdown-${idx}">
@@ -904,11 +759,8 @@
           </div>
           <div class="dropdown-list" id="time-list-${idx}"></div>
         </div>
-      </div>
-    `;
+      </div>`;
     document.getElementById('appt-blocks-container').appendChild(block);
-
-    // First appt label (retroactively)
     if (apptCount === 2) {
       const first = document.getElementById('appt-block-1');
       if (!first.querySelector('.appt-block-label')) {
@@ -920,143 +772,63 @@
     }
   }
 
-  // ── Cancel ──
+  // Cancel
   function cancelBooking() {
-    clearError();
-    show('step-phone');
-    hide('step-booking');
-    resetForm();
+    clearError(); show('step-phone'); hide('step-booking'); resetForm();
   }
-
   function clearError() {
     const b = document.getElementById('booking-error');
     if (b) { b.textContent = ''; b.classList.remove('visible'); }
   }
 
-  // ── Submit ──
+  // Submit
   async function submitBooking() {
     const firstName = document.getElementById('first-name').value.trim();
     const lastName  = document.getElementById('last-name').value.trim();
     const date      = document.getElementById('appt-date').value;
-
-    const banner = document.getElementById('booking-error');
-    banner.textContent = '';
-    banner.classList.remove('visible');
-
+    const banner    = document.getElementById('booking-error');
+    banner.textContent = ''; banner.classList.remove('visible');
     const appointments = [];
     for (let i = 1; i <= apptCount; i++) {
       const block = document.getElementById('appt-block-' + i);
       if (!block) continue;
       const services = [...block.querySelectorAll('.pill.selected')].map(p => {
-        const svc = p.dataset.service;
-        if (svc === 'Other') {
+        if (p.dataset.service === 'Other') {
           const desc = document.getElementById('other-text-' + i)?.value.trim();
           return desc ? `Other (${desc})` : 'Other';
         }
-        return `${svc} ${p.dataset.dur}`;
+        return `${p.dataset.service} ${p.dataset.dur}`;
       });
-      const techs = techSelections[i] || ['Any Tech'];
-      appointments.push({
-        services,
-        technician: techs.join(', '),
-        time: timeSelections[i] || '',
-      });
+      appointments.push({ services, technician: (techSelections[i] || ['Any Tech']).join(', '), time: timeSelections[i] || '' });
     }
-
     const bookBtn = document.querySelector('.btn-primary');
-    bookBtn.disabled    = true;
-    bookBtn.textContent = 'Booking…';
-
+    bookBtn.disabled = true; bookBtn.textContent = 'Booking…';
     try {
-      for (let ai = 0; ai < appointments.length; ai++) {
-        const appt = appointments[ai];
-        const params = new URLSearchParams({
-          action:     'book',
-          phone:      currentPhone,
-          firstName,
-          lastName,
-          date,
-          technician: appt.technician,
-          time:       appt.time,
-          services:   appt.services.join(', '),
-        });
+      for (const appt of appointments) {
+        const params = new URLSearchParams({ action: 'book', phone: currentPhone, firstName, lastName, date, technician: appt.technician, time: appt.time, services: appt.services.join(', ') });
         const res  = await fetch(`${SCRIPT_URL}?${params}`);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        if (!data.success) {
-          if (data.partialConflict) {
-            // Some techs in this selection are booked, others are free.
-            const booked = data.bookedTechs.join(' and ');
-            const free   = data.freeTechs.join(' and ');
-            let msg = `${booked} ${data.bookedTechs.length === 1 ? 'is' : 'are'} unavailable at ${appt.time}.`;
-            msg += ` ${free} can see you at that time.`;
-            if (data.nextAvailable) {
-              msg += ` Please choose another technician or update your time to ${data.nextAvailable}.`;
-            } else {
-              msg += ` Please choose another technician or a different time.`;
-            }
-            banner.textContent = msg;
-            banner.classList.add('visible');
-            bookBtn.disabled    = false;
-            bookBtn.textContent = 'Book Now';
-            return;
-          }
-          if (data.conflict) {
-            // All selected techs are booked — look at other appointments in this booking.
-            const otherTechs = appointments
-              .filter((_, j) => j !== ai)
-              .map(a => a.technician)
-              .filter(t => t && t !== appt.technician);
-            let msg = `${appt.technician} is unavailable at ${appt.time}.`;
-            if (otherTechs.length > 0) {
-              msg += ` ${otherTechs.join(' and ')} can see you at that time.`;
-            }
-            if (data.nextAvailable) {
-              msg += ` Please choose another technician or update your time to ${data.nextAvailable}.`;
-            } else {
-              msg += ` Please choose another technician or a different time.`;
-            }
-            banner.textContent = msg;
-            banner.classList.add('visible');
-            bookBtn.disabled    = false;
-            bookBtn.textContent = 'Book Now';
-            return;
-          }
-          throw new Error(data.error || 'Booking failed — please try another time.');
-        }
+        if (!data.success) throw new Error(data.error || 'Booking failed — please try another time.');
       }
-
       let summary = `<strong>${firstName} ${lastName}</strong><br>${formatDate(date)}<br><br>`;
       appointments.forEach((a, i) => {
         if (appointments.length > 1) summary += `<strong>Appointment ${i + 1}</strong><br>`;
-        summary += `${a.services.length ? a.services.join(', ') : '—'}<br>`;
-        summary += `With: ${a.technician}<br>`;
-        summary += `Time: ${a.time || 'Not specified'}`;
+        summary += `${a.services.length ? a.services.join(', ') : '—'}<br>With: ${a.technician}<br>Time: ${a.time || 'Not specified'}`;
         if (i < appointments.length - 1) summary += '<br><br>';
       });
       document.getElementById('confirm-summary').innerHTML = summary;
-      hide('step-booking');
-      show('step-confirm');
+      hide('step-booking'); show('step-confirm');
     } catch (err) {
-      banner.textContent = err.message && !err.message.startsWith('HTTP')
-        ? err.message
-        : 'Something went wrong — please try again or call us at (713) 622-6245.';
+      banner.textContent = err.message && !err.message.startsWith('HTTP') ? err.message : 'Something went wrong — please try again or call us.';
       banner.classList.add('visible');
-      bookBtn.disabled    = false;
-      bookBtn.textContent = 'Book Now';
+      bookBtn.disabled = false; bookBtn.textContent = 'Book Now';
     }
   }
 
-  function bookAnother() {
-    hide('step-confirm');
-    resetForm();
-    show('step-phone');
-  }
-
-  // ── Helpers ──
+  function bookAnother() { hide('step-confirm'); resetForm(); show('step-phone'); }
   function show(id) { document.getElementById(id).style.display = 'block'; }
   function hide(id) { document.getElementById(id).style.display = 'none'; }
-
   function formatDate(str) {
     if (!str) return 'Date not set';
     const [y, m, d] = str.split('-');
@@ -1066,47 +838,26 @@
 
   function resetForm() {
     apptCount = 1;
-    Object.keys(techSelections).forEach(k => delete techSelections[k]);
-    Object.keys(timeSelections).forEach(k => delete timeSelections[k]);
-    Object.keys(unavailableSlots).forEach(k => delete unavailableSlots[k]);
-    techSelections[1]  = ['Any Tech'];
-    timeSelections[1]  = null;
-    unavailableSlots[1] = new Set();
-
-    document.getElementById('phone-input').value   = '';
-    document.getElementById('first-name').value    = '';
-    document.getElementById('last-name').value     = '';
-    document.getElementById('appt-date').value     = '';
-
-    // Remove extra appt blocks
+    [techSelections, timeSelections, unavailableSlots].forEach(o => Object.keys(o).forEach(k => delete o[k]));
+    techSelections[1] = ['Any Tech']; timeSelections[1] = null; unavailableSlots[1] = new Set();
+    ['phone-input','first-name','last-name','appt-date'].forEach(id => document.getElementById(id).value = '');
     const container = document.getElementById('appt-blocks-container');
     [...container.querySelectorAll('.appt-block')].slice(1).forEach(b => b.remove());
-    // Remove injected label from first block
     const firstLabel = document.querySelector('#appt-block-1 .appt-block-label');
     if (firstLabel) firstLabel.remove();
-
-    // Reset pills
     document.querySelectorAll('#pills-1 .pill.selected').forEach(p => p.classList.remove('selected'));
     const ow = document.getElementById('other-wrap-1');
     if (ow) ow.classList.remove('visible');
-
-    // Reset tech display
     document.querySelectorAll('#tech-list-1 .dropdown-option').forEach(o => o.classList.remove('selected-opt'));
     document.querySelector('#tech-list-1 [data-value="Any Tech"]').classList.add('selected-opt');
     document.getElementById('tech-display-1').textContent = 'Any Tech';
-
-    // Reset time display and rebuild list clean
     document.getElementById('time-display-1').textContent = 'Select a time…';
     document.getElementById('time-display-1').classList.add('placeholder');
     const tl = document.getElementById('time-list-1');
-    tl.innerHTML = '';
-    delete tl.dataset.built;
+    tl.innerHTML = ''; delete tl.dataset.built;
   }
 
-  // ── Init ──
-  // Build time list for first appointment on first open
-  document.getElementById('time-dropdown-1')
-    .querySelector('.dropdown-trigger')
+  document.getElementById('time-dropdown-1').querySelector('.dropdown-trigger')
     .addEventListener('click', function () { buildTimeList(1); });
 </script>
 </body>

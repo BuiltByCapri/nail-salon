@@ -77,6 +77,7 @@
     }
     input:focus { border-color: var(--accent); }
     input::placeholder { color: #c9b0a4; }
+    input[type="date"] { width: 100%; max-width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
     /* ─── NOTICE ─── */
@@ -162,6 +163,7 @@
       .grid-2 { grid-template-columns: 1fr; }
       .btn-row { flex-direction: column; }
       .btn { width: 100%; text-align: center; }
+      input[type="date"] { font-size: 0.82rem; padding: 0.65rem 0.5rem; width: 100%; max-width: 100%; min-width: 0; }
     }
   </style>
 </head>
@@ -657,6 +659,12 @@
     const banner    = document.getElementById('booking-error');
     banner.textContent = ''; banner.classList.remove('visible');
 
+    if (!date) {
+      banner.textContent = 'Please select a date for your appointment.';
+      banner.classList.add('visible');
+      return;
+    }
+
     const appointments = [];
     for (let i = 1; i <= apptCount; i++) {
       const block = document.getElementById('appt-block-' + i);
@@ -692,7 +700,15 @@
         const res  = await fetch(`${SCRIPT_URL}?${params}`);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        if (!data.success) throw new Error(data.error || 'Booking failed — please try another time.');
+        if (!data.success) {
+          let errorMsg;
+          if (data.nextAvailable && data.conflictTech && data.freeTech) {
+            errorMsg = `${data.conflictTech} is not available at ${appt.time}. Next available for ${data.conflictTech}: ${data.nextAvailable}. ${data.freeTech} is available at your selected time.`;
+          } else {
+            errorMsg = data.error || 'Booking failed — please try another time.';
+          }
+          throw new Error(errorMsg);
+        }
         lastRewards = data;
       }
 

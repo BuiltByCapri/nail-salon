@@ -42,7 +42,7 @@
 
     .form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1.1rem; }
     label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
-    input[type="tel"], input[type="password"] {
+    input[type="tel"] {
       border: 0.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.9rem;
       font-family: 'Jost', sans-serif; font-size: 0.92rem; font-weight: 300;
       color: var(--text); background: var(--white); outline: none; width: 100%; transition: border-color 0.2s;
@@ -62,23 +62,6 @@
     .error-banner { display: none; background: #fde8df; border: 0.5px solid #d4917a; border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.82rem; color: #7a3a25; margin-bottom: 1.2rem; }
     .error-banner.visible { display: block; }
 
-    /* ─── APPOINTMENT CARD ─── */
-    .appt-card { background: #fde8df; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.2rem; }
-    .appt-card-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.4rem; color: var(--accent); margin-bottom: 0.5rem; }
-    .appt-card-row { font-size: 0.82rem; font-weight: 300; color: var(--text); line-height: 2; }
-    .appt-card-row strong { font-weight: 500; color: var(--accent); }
-
-    .points-preview { font-size: 0.82rem; font-weight: 300; color: var(--text); background: var(--white); border: 0.5px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.2rem; line-height: 1.7; }
-    .points-preview strong { font-weight: 500; color: var(--accent); }
-
-    /* ─── CONFIRMATION ─── */
-    .confirm-star { font-size: 1rem; color: var(--floral); letter-spacing: 0.4em; margin-bottom: 0.8rem; display: block; }
-    .confirm-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2rem; color: var(--accent); margin-bottom: 1rem; }
-    .confirm-body { font-size: 0.88rem; font-weight: 300; line-height: 2; color: var(--text); }
-    .confirm-body strong { font-weight: 500; color: var(--accent); }
-    .rewards-progress { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.6rem; overflow: hidden; }
-    .rewards-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; }
-
     /* ─── HOME BUTTONS ─── */
     .home-options { display: flex; flex-direction: column; gap: 1rem; max-width: 520px; margin: 0 auto; }
     .home-btn { background: var(--card-bg); border: 0.5px solid var(--border); border-radius: 16px; padding: 1.8rem 2rem; cursor: pointer; text-align: center; transition: border-color 0.2s, transform 0.1s; text-decoration: none; display: block; }
@@ -86,8 +69,56 @@
     .home-btn-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.5rem; color: var(--accent); margin-bottom: 0.3rem; }
     .home-btn-sub { font-size: 0.78rem; font-weight: 300; color: var(--accent-lt); letter-spacing: 0.04em; }
 
+    /* ─── APPOINTMENT SUMMARY ─── */
+    .appt-summary { background: #fde8df; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.2rem; font-size: 0.82rem; font-weight: 300; color: var(--text); line-height: 2; }
+    .appt-summary strong { font-weight: 500; color: var(--accent); }
+
+    /* ─── POINTS BADGE ─── */
+    .points-badge { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; font-size: 0.82rem; font-weight: 300; color: var(--text); line-height: 1.8; }
+    .points-badge strong { font-weight: 500; color: var(--accent); }
+    .points-badge .earned { font-size: 1rem; font-weight: 500; color: var(--accent); }
+    .rewards-progress { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.6rem; overflow: hidden; }
+    .rewards-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+    /* ─── REDEMPTION OPTIONS ─── */
+    .redemption-section { margin-bottom: 1.2rem; }
+    .redemption-title { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); margin-bottom: 0.8rem; }
+    .redemption-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: var(--white);
+    }
+    .redemption-option:hover { border-color: var(--accent-lt); }
+    .redemption-option.selected { border-color: var(--accent); background: #fde8df; }
+    .redemption-option.locked { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+    .redemption-left { display: flex; flex-direction: column; gap: 2px; }
+    .redemption-name { font-size: 0.88rem; font-weight: 400; color: var(--text); }
+    .redemption-cost { font-size: 0.75rem; font-weight: 300; color: var(--accent-lt); }
+    .redemption-right { font-size: 0.72rem; font-weight: 300; color: var(--accent-lt); white-space: nowrap; }
+    .redemption-check { width: 18px; height: 18px; border-radius: 50%; border: 0.5px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, border-color 0.15s; }
+    .redemption-option.selected .redemption-check { background: var(--accent); border-color: var(--accent); }
+    .redemption-check::after { content: ''; display: none; width: 5px; height: 3px; border-left: 1.5px solid #fff9f7; border-bottom: 1.5px solid #fff9f7; transform: rotate(-45deg) translateY(-1px); }
+    .redemption-option.selected .redemption-check::after { display: block; }
+
+    .redemption-notice { font-size: 0.75rem; font-weight: 300; color: var(--accent-lt); font-style: italic; margin-top: 0.4rem; }
+
+    /* ─── CONFIRMATION ─── */
+    .confirm-star { font-size: 1rem; color: var(--floral); letter-spacing: 0.4em; margin-bottom: 0.8rem; display: block; }
+    .confirm-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2rem; color: var(--accent); margin-bottom: 1rem; }
+    .confirm-body { font-size: 0.88rem; font-weight: 300; line-height: 2; color: var(--text); }
+    .confirm-body strong { font-weight: 500; color: var(--accent); }
+
+    /* ─── STEPS ─── */
     #step-home    { display: block; }
     #step-checkin { display: none; }
+    #step-redeem  { display: none; }
     #step-confirm { display: none; }
 
     footer { text-align: center; padding: 1.2rem; font-size: 0.76rem; font-weight: 300; color: var(--accent); letter-spacing: 0.04em; border-top: 0.5px solid var(--border); }
@@ -101,7 +132,6 @@
 </head>
 <body>
 
-<!-- ─── HEADER ─── -->
 <header>
   <img src="logo.jpg" alt="Salon Logo" class="header-logo" onerror="this.style.display='none'" />
   <div class="header-brand-name"><!-- SALON NAME --></div>
@@ -115,7 +145,7 @@
 
 <main>
 
-  <!-- STEP 1: HOME — Check In or Book -->
+  <!-- STEP 1: HOME -->
   <div id="step-home">
     <div class="home-options">
       <a class="home-btn" onclick="showCheckin()">
@@ -129,32 +159,53 @@
     </div>
   </div>
 
-  <!-- STEP 2: CHECK IN FORM -->
+  <!-- STEP 2: PHONE LOOKUP -->
   <div id="step-checkin">
     <div class="card">
       <div class="card-title">Check In</div>
       <div class="card-sub">Enter your phone number to find your appointment</div>
-
       <div class="error-banner" id="checkin-error"></div>
-
       <div class="form-group">
         <label for="checkin-phone">Phone Number</label>
         <input type="tel" id="checkin-phone" placeholder="(XXX) XXX-XXXX" maxlength="14" />
       </div>
-
       <button class="btn btn-primary btn-full" onclick="handleCheckin()">Find My Appointment</button>
-
       <div class="btn-row">
         <button class="btn btn-ghost" onclick="showHome()">Back</button>
       </div>
     </div>
   </div>
 
-  <!-- STEP 3: CONFIRMATION -->
+  <!-- STEP 3: POINTS + REDEMPTION -->
+  <div id="step-redeem">
+    <div class="card">
+      <div class="card-title" id="redeem-title">You're checked in ✦</div>
+      <div class="card-sub" id="redeem-sub"></div>
+
+      <!-- Appointment summary -->
+      <div class="appt-summary" id="redeem-appt"></div>
+
+      <!-- Points earned today -->
+      <div class="points-badge" id="redeem-points"></div>
+
+      <!-- Redemption options (only shown if they have enough points) -->
+      <div class="redemption-section" id="redeem-options" style="display:none;">
+        <div class="redemption-title">Would you like to use your points today?</div>
+        <div id="redemption-list"></div>
+        <div class="redemption-notice">Let the front desk know your selection before your service begins.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="showConfirm()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: FINAL CONFIRMATION -->
   <div id="step-confirm">
     <div class="card" style="text-align:center; padding: 3rem 2rem;">
       <span class="confirm-star">✦ &nbsp; ✦ &nbsp; ✦</span>
-      <div class="confirm-title" id="confirm-title">Welcome!</div>
+      <div class="confirm-title">Enjoy your visit!</div>
       <div class="confirm-body" id="confirm-body"></div>
       <div class="btn-row" style="justify-content:center; margin-top:2rem;">
         <button class="btn btn-ghost" onclick="showHome()">Done</button>
@@ -170,9 +221,22 @@
   // ============================================================
   // CUSTOMIZE: Must match index.html
   // ============================================================
-  const SCRIPT_URL        = 'https://script.google.com/macros/s/AKfycbweEpavxdcWNjpg_1hUC2xsq-rSaSDkg5eTykTZiT1QEyZ3_equDZSGfVR6oc8Ob7lQ/exec';
+  const SCRIPT_URL        = 'YOUR_APPS_SCRIPT_URL_HERE';
   const FREE_PEDICURE_PTS = 125;
+
   // ============================================================
+  // CUSTOMIZE: Redemption tiers — add/remove/change as needed
+  // Format: { name, cost, description }
+  // ============================================================
+  const REDEMPTION_TIERS = [
+    { name: 'Free Pedicure',         cost: 125, description: 'Full pedicure on us' },
+    { name: '$10 Off Any Service',   cost: 75,  description: 'Applied to your service today' },
+    { name: '$5 Off Any Service',    cost: 40,  description: 'Applied to your service today' },
+  ];
+  // ============================================================
+
+  let checkinData    = null;
+  let selectedReward = null;
 
   // Phone formatting
   document.getElementById('checkin-phone').addEventListener('input', function () {
@@ -186,11 +250,13 @@
   function showHome() {
     document.getElementById('checkin-phone').value = '';
     clearError();
-    show('step-home'); hide('step-checkin'); hide('step-confirm');
+    checkinData    = null;
+    selectedReward = null;
+    show('step-home'); hide('step-checkin'); hide('step-redeem'); hide('step-confirm');
   }
 
   function showCheckin() {
-    hide('step-home'); show('step-checkin'); hide('step-confirm');
+    hide('step-home'); show('step-checkin'); hide('step-redeem'); hide('step-confirm');
   }
 
   async function handleCheckin() {
@@ -212,43 +278,122 @@
       }
 
       if (data.alreadyCheckedIn) {
-        showError(`You're already checked in for today, ${data.firstName}! See you soon.`);
+        showError(`You're already checked in, ${data.firstName}! Your technician will be right with you.`);
         btn.disabled = false; btn.textContent = 'Find My Appointment';
         return;
       }
 
-      // Show confirmation
-      const pct = Math.min(100, Math.round((data.totalPoints / FREE_PEDICURE_PTS) * 100));
-      document.getElementById('confirm-title').textContent = `Welcome, ${data.firstName}! ✦`;
-
-      let body = `
-        <div style="text-align:left; margin-bottom:1.2rem;">
-          <div style="font-size:0.82rem; font-weight:300; line-height:2; color:var(--text);">
-            <strong>${data.services}</strong><br>
-            With: ${data.technician}<br>
-            Time: ${data.time}
-          </div>
-        </div>
-        <div style="background:#fde8df; border-radius:8px; padding:0.9rem 1rem; font-size:0.82rem; font-weight:300; line-height:1.8; text-align:left;">
-          <strong>+${data.pointsEarned} points added to your account!</strong><br>
-          You now have <strong>${data.totalPoints} points</strong>.<br>`;
-
-      if (data.freeReward) {
-        body += `🎉 <strong>You've earned a free pedicure!</strong> Mention this to your technician.`;
-      } else {
-        body += `${data.pointsToFree} more points until a free pedicure.
-          <div class="rewards-progress"><div class="rewards-progress-fill" style="width:${pct}%"></div></div>`;
-      }
-      body += `</div>`;
-
-      document.getElementById('confirm-body').innerHTML = body;
-      hide('step-checkin'); show('step-confirm');
+      checkinData = data;
+      buildRedeemScreen(data);
+      hide('step-checkin'); show('step-redeem');
 
     } catch (err) {
       showError('Something went wrong — please see the front desk.');
     }
 
     btn.disabled = false; btn.textContent = 'Find My Appointment';
+  }
+
+  function buildRedeemScreen(data) {
+    // Title
+    document.getElementById('redeem-title').textContent = `Welcome, ${data.firstName}! ✦`;
+    document.getElementById('redeem-sub').textContent   = data.services;
+
+    // Appointment summary
+    document.getElementById('redeem-appt').innerHTML =
+      `<strong>${data.services}</strong><br>With: ${data.technician} &nbsp;·&nbsp; ${data.time}`;
+
+    // Points badge
+    const pct        = Math.min(100, Math.round((data.totalPoints / FREE_PEDICURE_PTS) * 100));
+    let pointsHtml   = `<span class="earned">+${data.pointsEarned} points earned today!</span><br>`;
+    pointsHtml      += `You now have <strong>${data.totalPoints} points</strong>.<br>`;
+
+    if (data.freeReward) {
+      pointsHtml += `🎉 <strong>You've earned a free pedicure!</strong>`;
+    } else {
+      pointsHtml += `${data.pointsToFree} more points until a free pedicure.`;
+      pointsHtml += `<div class="rewards-progress"><div class="rewards-progress-fill" style="width:${pct}%"></div></div>`;
+    }
+    document.getElementById('redeem-points').innerHTML = pointsHtml;
+
+    // Redemption options
+    const eligible = REDEMPTION_TIERS.filter(t => data.totalPoints >= t.cost);
+    const locked   = REDEMPTION_TIERS.filter(t => data.totalPoints < t.cost);
+
+    if (eligible.length > 0) {
+      const list = document.getElementById('redemption-list');
+      list.innerHTML = '';
+
+      // Eligible options
+      eligible.forEach(function(tier) {
+        const opt = document.createElement('div');
+        opt.className = 'redemption-option';
+        opt.innerHTML = `
+          <div class="redemption-left">
+            <div class="redemption-name">${tier.name}</div>
+            <div class="redemption-cost">${tier.cost} points · ${tier.description}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <div class="redemption-check"></div>
+          </div>`;
+        opt.addEventListener('click', function() {
+          document.querySelectorAll('.redemption-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          selectedReward = tier;
+        });
+        list.appendChild(opt);
+      });
+
+      // Locked options (not enough points)
+      locked.forEach(function(tier) {
+        const needed = tier.cost - data.totalPoints;
+        const opt    = document.createElement('div');
+        opt.className = 'redemption-option locked';
+        opt.innerHTML = `
+          <div class="redemption-left">
+            <div class="redemption-name">${tier.name}</div>
+            <div class="redemption-cost">${tier.cost} points · ${tier.description}</div>
+          </div>
+          <div class="redemption-right">${needed} more pts needed</div>`;
+        list.appendChild(opt);
+      });
+
+      // "No thanks" option
+      const noThanks = document.createElement('div');
+      noThanks.className = 'redemption-option';
+      noThanks.innerHTML = `
+        <div class="redemption-left">
+          <div class="redemption-name">No thanks, save my points</div>
+          <div class="redemption-cost">Keep points for a future visit</div>
+        </div>
+        <div class="redemption-check"></div>`;
+      noThanks.addEventListener('click', function() {
+        document.querySelectorAll('.redemption-option').forEach(o => o.classList.remove('selected'));
+        noThanks.classList.add('selected');
+        selectedReward = null;
+      });
+      list.appendChild(noThanks);
+
+      document.getElementById('redeem-options').style.display = 'block';
+    } else {
+      document.getElementById('redeem-options').style.display = 'none';
+    }
+  }
+
+  function showConfirm() {
+    let body = '';
+
+    if (selectedReward) {
+      body = `<strong>Please let the front desk know:</strong><br>
+        You'd like to redeem <strong>${selectedReward.name}</strong> (${selectedReward.cost} points).<br><br>
+        <span style="font-size:0.78rem;color:var(--accent-lt);">Your technician will apply this to your service today.</span>`;
+    } else {
+      body = `Your points are saved for a future visit.<br><br>
+        <span style="font-size:0.78rem;color:var(--accent-lt);">Your technician will be right with you — enjoy your visit!</span>`;
+    }
+
+    document.getElementById('confirm-body').innerHTML = body;
+    hide('step-redeem'); show('step-confirm');
   }
 
   function showError(msg) {

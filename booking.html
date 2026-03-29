@@ -665,6 +665,14 @@
       return;
     }
 
+    for (let i = 1; i <= apptCount; i++) {
+      if (!timeSelections[i]) {
+        banner.textContent = 'Please select a preferred time for your appointment.';
+        banner.classList.add('visible');
+        return;
+      }
+    }
+
     const appointments = [];
     for (let i = 1; i <= apptCount; i++) {
       const block = document.getElementById('appt-block-' + i);

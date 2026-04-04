@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Profile · SALON NAME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ============================================================
+       CUSTOMIZE THESE COLORS PER CLIENT
+       ============================================================ */
+    :root {
+      --bg:        #fdf0ec;
+      --text:      #8a5a42;
+      --accent:    #b87a5a;
+      --accent-lt: #c9956a;
+      --floral:    #f2bfb5;
+      --card-bg:   #fff9f7;
+      --border:    #e8c9bc;
+      --white:     #ffffff;
+    }
+
+    body { font-family: 'Jost', sans-serif; font-weight: 400; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ─── HEADER ─── */
+    header { background: var(--bg); text-align: center; padding: 2.5rem 1.5rem 2rem; border-bottom: 0.5px solid var(--border); }
+    .header-logo { height: 90px; width: auto; margin: 0 auto 0.5rem; display: block; }
+    .header-brand-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(2.8rem, 7vw, 4.2rem); color: var(--accent); line-height: 1; }
+    .header-subtitle { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text); margin-top: 0.3rem; }
+    .header-sep { color: var(--floral); font-size: 0.65rem; margin: 0.6rem 0; letter-spacing: 0.5em; }
+    .header-info { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 0.82rem; color: var(--accent-lt); line-height: 1.9; }
+    .header-info a { color: var(--accent-lt); text-decoration: none; }
+
+    /* ─── MAIN ─── */
+    main { flex: 1; padding: 2.5rem 1.5rem 3rem; }
+
+    /* ─── CARD ─── */
+    .card { background: var(--card-bg); border: 0.5px solid var(--border); border-radius: 16px; width: 100%; max-width: 600px; margin: 0 auto; padding: 2rem; }
+    .card + .card { margin-top: 1rem; }
+    .card-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.7rem; color: var(--accent); margin-bottom: 0.3rem; }
+    .card-sub { font-size: 0.82rem; font-weight: 300; color: var(--accent-lt); margin-bottom: 1.8rem; }
+    .section-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-lt); margin-bottom: 0.8rem; }
+
+    /* ─── INPUTS ─── */
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1.1rem; }
+    label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
+    input[type="text"], input[type="tel"], input[type="email"], input[type="date"] {
+      border: 0.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.9rem;
+      font-family: 'Jost', sans-serif; font-size: 0.92rem; font-weight: 300;
+      color: var(--text); background: var(--white); outline: none; width: 100%; transition: border-color 0.2s;
+    }
+    input[type="date"] { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+    input:focus { border-color: var(--accent); }
+    input::placeholder { color: #c9b0a4; }
+    textarea {
+      border: 0.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.9rem;
+      font-family: 'Jost', sans-serif; font-size: 0.88rem; font-weight: 300; line-height: 1.6;
+      color: var(--text); background: var(--white); outline: none; width: 100%;
+      resize: vertical; min-height: 90px; transition: border-color 0.2s;
+    }
+    textarea:focus { border-color: var(--accent); }
+    textarea::placeholder { color: #c9b0a4; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ─── BUTTONS ─── */
+    .btn { font-family: 'Jost', sans-serif; font-weight: 400; font-size: 0.85rem; letter-spacing: 0.06em; border-radius: 24px; padding: 0.65rem 1.6rem; cursor: pointer; border: none; transition: opacity 0.15s, transform 0.1s; text-transform: uppercase; }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: #fff9f7; }
+    .btn-ghost { background: transparent; color: var(--accent); border: 0.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); }
+    .btn-sm { font-size: 0.75rem; padding: 0.4rem 1rem; }
+    .btn-full { width: 100%; margin-top: 0.5rem; padding: 0.75rem; font-size: 0.88rem; }
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; margin-top: 1rem; }
+
+    /* ─── ERROR / SUCCESS BANNERS ─── */
+    .error-banner { display: none; background: #fde8df; border: 0.5px solid #d4917a; border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.82rem; color: #7a3a25; margin-bottom: 1rem; }
+    .error-banner.visible { display: block; }
+    .success-banner { display: none; background: #e8f5e9; border: 0.5px solid #a5d6a7; border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.82rem; color: #2e7d32; margin-top: 0.6rem; }
+    .success-banner.visible { display: block; }
+
+    /* ─── PROFILE HEADER ─── */
+    .profile-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.4rem; gap: 1rem; }
+    .profile-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2rem; color: var(--accent); line-height: 1.1; }
+    .profile-contact { font-size: 0.82rem; font-weight: 300; color: var(--accent-lt); margin-top: 0.3rem; line-height: 1.7; }
+
+    /* ─── REWARDS PROGRESS ─── */
+    .rewards-progress { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem; }
+    .rewards-progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s; }
+    .progress-label { font-size: 0.75rem; font-weight: 300; color: var(--accent-lt); margin-bottom: 1.2rem; }
+    .free-reward-notice { font-size: 0.82rem; font-weight: 500; color: var(--accent); margin-bottom: 1.2rem; }
+
+    /* ─── STATS ROW ─── */
+    .stats-row { display: flex; gap: 0; border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 0; }
+    .stat-item { flex: 1; padding: 0.8rem 0.5rem; text-align: center; }
+    .stat-item + .stat-item { border-left: 0.5px solid var(--border); }
+    .stat-value { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.4rem; color: var(--accent); line-height: 1; }
+    .stat-label { font-size: 0.65rem; font-weight: 300; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-lt); margin-top: 0.2rem; }
+
+    /* ─── INLINE SAVE ROW ─── */
+    .save-row { display: flex; gap: 0.6rem; align-items: flex-start; margin-top: 0.5rem; }
+    .save-row .btn { margin-top: 0; flex-shrink: 0; }
+
+    /* ─── EXISTING NOTE DISPLAY ─── */
+    .existing-note { background: #fde8df; border: 0.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.82rem; font-weight: 300; color: var(--text); line-height: 1.7; margin-top: 0.5rem; white-space: pre-wrap; }
+    .existing-note:empty { display: none; }
+
+    /* ─── TIMELINE ─── */
+    .timeline { display: flex; flex-direction: column; }
+    .timeline-item { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 0.5px solid var(--border); }
+    .timeline-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .timeline-dot-col { display: flex; flex-direction: column; align-items: center; padding-top: 0.3rem; min-width: 12px; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .timeline-dot.checked-in { background: var(--accent); }
+    .timeline-dot.walk-in    { background: var(--accent-lt); }
+    .timeline-dot.pending    { background: var(--border); border: 1.5px solid var(--accent-lt); }
+    .timeline-line { flex: 1; width: 1px; background: var(--border); margin-top: 5px; }
+    .timeline-content { flex: 1; min-width: 0; }
+    .timeline-date { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+    .timeline-services { font-size: 0.88rem; font-weight: 300; color: var(--text); margin-top: 0.2rem; }
+    .timeline-meta { font-size: 0.75rem; font-weight: 300; color: var(--accent-lt); margin-top: 0.2rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .status-badge { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 10px; }
+    .status-badge.checked-in { background: #e8f0e8; color: #3a6b3a; }
+    .status-badge.walk-in    { background: #fde8df; color: var(--accent); }
+    .status-badge.pending    { background: var(--border); color: var(--text); }
+    .timeline-empty { font-size: 0.82rem; font-weight: 300; color: var(--accent-lt); font-style: italic; }
+
+    /* ─── STEPS ─── */
+    #step-lookup  { display: block; }
+    #step-profile { display: none; }
+
+    /* ─── FOOTER ─── */
+    footer { text-align: center; padding: 1.2rem; font-size: 0.76rem; font-weight: 300; color: var(--accent); letter-spacing: 0.04em; border-top: 0.5px solid var(--border); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 520px) {
+      .card { padding: 1.8rem 1.2rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .profile-name { font-size: 1.6rem; }
+      input[type="date"] { font-size: 0.82rem; padding: 0.65rem 0.5rem; min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <img src="logo.jpg" alt="Salon Logo" class="header-logo" onerror="this.style.display='none'" />
+  <div class="header-brand-name"><!-- SALON NAME --></div>
+  <div class="header-subtitle">Nails &amp; Spa · Staff</div>
+  <div class="header-sep">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <div class="header-info">
+    <!-- STREET ADDRESS --> &nbsp;✦&nbsp; <!-- CITY, STATE ZIP --><br>
+    <a href="tel:+1XXXXXXXXXX">(XXX) XXX-XXXX</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ─── STEP 1: PHONE LOOKUP ─── -->
+  <div id="step-lookup">
+    <div class="card">
+      <div class="card-title">Client Profile</div>
+      <div class="card-sub">Staff use only — look up a client by phone number</div>
+      <div class="error-banner" id="lookup-error"></div>
+      <div class="form-group">
+        <label for="lookup-phone">Phone Number</label>
+        <input type="tel" id="lookup-phone" placeholder="(XXX) XXX-XXXX" maxlength="14" />
+      </div>
+      <button class="btn btn-primary btn-full" id="lookup-btn" onclick="loadProfile()">Look Up Client</button>
+    </div>
+  </div>
+
+  <!-- ─── STEP 2: PROFILE VIEW ─── -->
+  <div id="step-profile">
+
+    <!-- Profile card -->
+    <div class="card">
+
+      <!-- Display mode -->
+      <div id="profile-display">
+        <div class="profile-header">
+          <div>
+            <div class="profile-name" id="profile-name"></div>
+            <div class="profile-contact" id="profile-contact"></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="toggleEdit()">Edit</button>
+        </div>
+
+        <div class="rewards-progress">
+          <div class="rewards-progress-fill" id="profile-progress" style="width:0%"></div>
+        </div>
+        <div class="progress-label" id="profile-progress-label"></div>
+
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-points">0</div>
+            <div class="stat-label">Points</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-visits">0</div>
+            <div class="stat-label">Visits</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-last-visit">—</div>
+            <div class="stat-label">Last Visit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit mode (hidden by default) -->
+      <div id="edit-display" style="display:none;">
+        <div class="section-label">Edit Client</div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="edit-first">First Name</label>
+            <input type="text" id="edit-first" />
+          </div>
+          <div class="form-group">
+            <label for="edit-last">Last Name</label>
+            <input type="text" id="edit-last" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="edit-email">Email</label>
+          <input type="email" id="edit-email" />
+        </div>
+        <div class="form-group">
+          <label for="edit-phone">Phone</label>
+          <input type="tel" id="edit-phone" maxlength="14" />
+        </div>
+        <div class="error-banner" id="edit-error"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+          <button class="btn btn-ghost"   onclick="toggleEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Birthday + Notes card -->
+    <div class="card">
+      <!-- Birthday -->
+      <div class="section-label">Birthday</div>
+      <div class="save-row">
+        <input type="date" id="birthday-input" style="flex:1;" />
+        <button class="btn btn-ghost btn-sm" onclick="saveBirthday()">Save</button>
+      </div>
+      <div class="success-banner" id="birthday-success">Birthday saved.</div>
+
+      <div style="height:1.4rem;"></div>
+
+      <!-- Notes -->
+      <div class="section-label">Staff Notes</div>
+      <textarea id="notes-input" placeholder="Allergies, preferences, preferred technician…"></textarea>
+      <div id="notes-existing" class="existing-note"></div>
+      <div class="btn-row" style="margin-top:0.8rem;">
+        <button class="btn btn-ghost btn-sm" onclick="saveNote()">Save Note</button>
+      </div>
+      <div class="success-banner" id="notes-success">Note saved.</div>
+    </div>
+
+    <!-- Visit history card -->
+    <div class="card">
+      <div class="section-label">Visit History</div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+
+    <!-- Actions -->
+    <div style="max-width:600px; margin: 1.5rem auto 0; display:flex; justify-content:center;">
+      <button class="btn btn-ghost" onclick="newLookup()">Look Up Another Client</button>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  © 2026 <!-- SALON NAME --> &nbsp;·&nbsp; <!-- CITY, STATE -->
+  &nbsp;·&nbsp; <a href="staff.html">Staff Home</a>
+</footer>
+
+<script>
+  // ============================================================
+  // CUSTOMIZE: Must match booking.html
+  // ============================================================
+  const SCRIPT_URL        = 'https://script.google.com/macros/s/AKfycbweEpavxdcWNjpg_1hUC2xsq-rSaSDkg5eTykTZiT1QEyZ3_equDZSGfVR6oc8Ob7lQ/exec';
+  const FREE_PEDICURE_PTS = 125;
+  // ============================================================
+
+  let currentProfilePhone = ''; // phone used for the current lookup
+
+  // ── Phone input formatting ──
+  document.getElementById('lookup-phone').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '').slice(0, 10);
+    if (v.length >= 7)      v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
+    else if (v.length >= 4) v = '(' + v.slice(0,3) + ') ' + v.slice(3);
+    else if (v.length >= 1) v = '(' + v;
+    this.value = v;
+  });
+  document.getElementById('lookup-phone').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') loadProfile();
+  });
+  document.getElementById('edit-phone').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '').slice(0, 10);
+    if (v.length >= 7)      v = '(' + v.slice(0,3) + ') ' + v.slice(3,6) + '-' + v.slice(6);
+    else if (v.length >= 4) v = '(' + v.slice(0,3) + ') ' + v.slice(3);
+    else if (v.length >= 1) v = '(' + v;
+    this.value = v;
+  });
+
+  // ── Load profile ──
+  async function loadProfile() {
+    const raw = document.getElementById('lookup-phone').value.replace(/\D/g, '');
+    if (!raw) { showLookupError('Please enter a phone number.'); return; }
+
+    const btn = document.getElementById('lookup-btn');
+    btn.disabled = true; btn.textContent = 'Looking up…';
+    clearLookupError();
+
+    try {
+      const [lookupRes, historyRes] = await Promise.all([
+        fetch(`${SCRIPT_URL}?action=lookup&phone=${encodeURIComponent(raw)}`),
+        fetch(`${SCRIPT_URL}?action=history&phone=${encodeURIComponent(raw)}`),
+      ]);
+      const client  = await lookupRes.json();
+      const history = await historyRes.json();
+
+      if (!client.found) {
+        showLookupError('No client found with that phone number.');
+        btn.disabled = false; btn.textContent = 'Look Up Client';
+        return;
+      }
+
+      currentProfilePhone = raw;
+      renderProfile(client, history.appointments || []);
+      hide('step-lookup'); show('step-profile');
+
+    } catch (_) {
+      showLookupError('Something went wrong — please try again.');
+    }
+
+    btn.disabled = false; btn.textContent = 'Look Up Client';
+  }
+
+  // ── Render profile ──
+  function renderProfile(client, appointments) {
+    // Name + contact
+    document.getElementById('profile-name').textContent =
+      `${client.firstName} ${client.lastName}`.trim() || '—';
+    const contactParts = [];
+    if (client.phone) contactParts.push(formatPhone(String(client.phone).replace(/\D/g, '')));
+    if (client.email) contactParts.push(client.email);
+    document.getElementById('profile-contact').textContent = contactParts.join(' · ') || '—';
+
+    // Points progress
+    const pct = Math.min(100, Math.round((client.points / FREE_PEDICURE_PTS) * 100));
+    document.getElementById('profile-progress').style.width = pct + '%';
+    document.getElementById('profile-progress-label').textContent = client.freeReward
+      ? '🎉 Free pedicure earned!'
+      : `${client.points} pts · ${client.pointsToFree} more until free pedicure`;
+
+    // Stats
+    document.getElementById('stat-points').textContent    = client.points   || 0;
+    document.getElementById('stat-visits').textContent    = client.totalVisits || 0;
+    document.getElementById('stat-last-visit').textContent = client.lastVisit
+      ? formatDateShort(client.lastVisit) : '—';
+
+    // Birthday
+    document.getElementById('birthday-input').value = client.birthday || '';
+
+    // Notes
+    document.getElementById('notes-input').value    = client.notes || '';
+    document.getElementById('notes-existing').textContent = '';
+
+    // Visit history
+    renderTimeline(appointments);
+  }
+
+  // ── Timeline ──
+  function renderTimeline(appointments) {
+    const el = document.getElementById('timeline');
+    if (!appointments.length) {
+      el.innerHTML = '<div class="timeline-empty">No visit history found.</div>';
+      return;
+    }
+    el.innerHTML = appointments.map(function(a, i) {
+      const statusClass = a.status.replace(/\s+/g, '-').toLowerCase();
+      const badge = `<span class="status-badge ${statusClass}">${a.status}</span>`;
+      const pts   = a.points ? `+${a.points} pts` : '';
+      const meta  = [`With ${a.technician || 'Any Tech'}`, pts].filter(Boolean).join(' · ');
+      const isLast = i === appointments.length - 1;
+      return `
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot ${statusClass}"></div>
+            ${!isLast ? '<div class="timeline-line"></div>' : ''}
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-date">${formatDate(a.date)}${a.time ? ' · ' + a.time : ''}</div>
+            <div class="timeline-services">${a.services || '—'}</div>
+            <div class="timeline-meta">${meta} ${badge}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Toggle edit ──
+  function toggleEdit() {
+    const isEditing = document.getElementById('edit-display').style.display !== 'none';
+    if (isEditing) {
+      document.getElementById('edit-display').style.display = 'none';
+      document.getElementById('profile-display').style.display = 'block';
+    } else {
+      // Pre-fill from current display
+      const nameParts = document.getElementById('profile-name').textContent.split(' ');
+      document.getElementById('edit-first').value  = nameParts[0] || '';
+      document.getElementById('edit-last').value   = nameParts.slice(1).join(' ') || '';
+      document.getElementById('edit-email').value  = (document.getElementById('profile-contact').textContent.split(' · ')[1] || '').trim();
+      document.getElementById('edit-phone').value  = (document.getElementById('profile-contact').textContent.split(' · ')[0] || '').trim();
+      clearBanner('edit-error');
+      document.getElementById('profile-display').style.display = 'none';
+      document.getElementById('edit-display').style.display    = 'block';
+    }
+  }
+
+  // ── Save edit ──
+  async function saveEdit() {
+    const btn      = document.querySelector('#edit-display .btn-primary');
+    const firstName = document.getElementById('edit-first').value.trim();
+    const lastName  = document.getElementById('edit-last').value.trim();
+    const email     = document.getElementById('edit-email').value.trim();
+    const newPhone  = document.getElementById('edit-phone').value.replace(/\D/g, '');
+
+    btn.disabled = true; btn.textContent = 'Saving…';
+    clearBanner('edit-error');
+
+    try {
+      const params = new URLSearchParams({
+        action: 'updateclient', phone: currentProfilePhone,
+        firstName, lastName, email, newPhone,
+      });
+      const res  = await fetch(`${SCRIPT_URL}?${params}`);
+      const data = await res.json();
+
+      if (!data.success) throw new Error(data.error || 'Save failed');
+
+      // Update phone key if changed
+      if (newPhone && newPhone !== currentProfilePhone) currentProfilePhone = newPhone;
+
+      // Refresh profile display
+      document.getElementById('profile-name').textContent     = `${firstName} ${lastName}`.trim();
+      const contactParts = [];
+      if (newPhone) contactParts.push(formatPhone(newPhone));
+      if (email)    contactParts.push(email);
+      document.getElementById('profile-contact').textContent  = contactParts.join(' · ') || '—';
+
+      document.getElementById('edit-display').style.display   = 'none';
+      document.getElementById('profile-display').style.display = 'block';
+
+    } catch (err) {
+      showBanner('edit-error', err.message || 'Something went wrong.');
+    }
+
+    btn.disabled = false; btn.textContent = 'Save Changes';
+  }
+
+  // ── Save note ──
+  async function saveNote() {
+    const note = document.getElementById('notes-input').value;
+    const btn  = document.querySelector('[onclick="saveNote()"]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    hideBanner('notes-success');
+
+    try {
+      const params = new URLSearchParams({ action: 'savenote', phone: currentProfilePhone, note });
+      const res  = await fetch(`${SCRIPT_URL}?${params}`);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Save failed');
+      document.getElementById('notes-existing').textContent = '';
+      showBanner('notes-success');
+    } catch (_) {}
+
+    btn.disabled = false; btn.textContent = 'Save Note';
+  }
+
+  // ── Save birthday ──
+  async function saveBirthday() {
+    const birthday = document.getElementById('birthday-input').value;
+    const btn      = document.querySelector('[onclick="saveBirthday()"]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    hideBanner('birthday-success');
+
+    try {
+      const params = new URLSearchParams({ action: 'savebirthday', phone: currentProfilePhone, birthday });
+      const res  = await fetch(`${SCRIPT_URL}?${params}`);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Save failed');
+      showBanner('birthday-success');
+    } catch (_) {}
+
+    btn.disabled = false; btn.textContent = 'Save';
+  }
+
+  // ── New lookup ──
+  function newLookup() {
+    currentProfilePhone = '';
+    document.getElementById('lookup-phone').value = '';
+    clearLookupError();
+    hide('step-profile'); show('step-lookup');
+    // Reset edit mode
+    document.getElementById('edit-display').style.display    = 'none';
+    document.getElementById('profile-display').style.display = 'block';
+    hideBanner('notes-success'); hideBanner('birthday-success');
+  }
+
+  // ── Helpers ──
+  function formatPhone(digits) {
+    const d = String(digits).replace(/\D/g, '');
+    if (d.length === 10) return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+    return digits;
+  }
+
+  function formatDate(str) {
+    if (!str) return '—';
+    try {
+      const [y, m, d] = str.split('-');
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return `${months[parseInt(m,10)-1]} ${parseInt(d,10)}, ${y}`;
+    } catch (_) { return str; }
+  }
+
+  function formatDateShort(str) {
+    if (!str) return '—';
+    try {
+      const [y, m, d] = str.split('-');
+      return `${parseInt(m,10)}/${parseInt(d,10)}/${y.slice(2)}`;
+    } catch (_) { return str; }
+  }
+
+  function show(id) { document.getElementById(id).style.display = 'block'; }
+  function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+  function showLookupError(msg) {
+    const b = document.getElementById('lookup-error');
+    b.textContent = msg; b.classList.add('visible');
+  }
+  function clearLookupError() {
+    const b = document.getElementById('lookup-error');
+    b.textContent = ''; b.classList.remove('visible');
+  }
+  function showBanner(id)  { const b = document.getElementById(id); b.classList.add('visible'); }
+  function hideBanner(id)  { const b = document.getElementById(id); b.classList.remove('visible'); }
+  function clearBanner(id) { const b = document.getElementById(id); b.textContent = ''; b.classList.remove('visible'); }
+</script>
+</body>
+</html>

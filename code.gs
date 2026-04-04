@@ -59,20 +59,25 @@ const CUSTOMER_TAB = 'Customers';
 
 function doGet(e) {
   const action = e.parameter.action;
-  if (action === 'lookup')       return lookupPhone(e.parameter.phone);
-  if (action === 'availability') return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services, e.parameter.multiTech);
-  if (action === 'book')         return bookAppointment(e.parameter);
-  if (action === 'checkin')      return checkInCustomer(e.parameter.phone);
-  if (action === 'walkin')       return recordWalkIn(e.parameter);
-  if (action === 'waittime')     return getWaitTime(e.parameter.services);
-  if (action === 'debug')        return debugInfo(e.parameter.technician, e.parameter.date);
+  if (action === 'lookup')        return lookupPhone(e.parameter.phone);
+  if (action === 'availability')  return checkAvailability(e.parameter.technician, e.parameter.date, e.parameter.services, e.parameter.multiTech);
+  if (action === 'book')          return bookAppointment(e.parameter);
+  if (action === 'checkin')       return checkInCustomer(e.parameter.phone);
+  if (action === 'walkin')        return recordWalkIn(e.parameter);
+  if (action === 'waittime')      return getWaitTime(e.parameter.services);
+  if (action === 'history')       return getClientHistory(e.parameter.phone);
+  if (action === 'savenote')      return saveClientNote(e.parameter.phone, e.parameter.note);
+  if (action === 'savebirthday')  return saveClientBirthday(e.parameter.phone, e.parameter.birthday);
+  if (action === 'updateclient')  return updateClient(e.parameter);
+  if (action === 'debug')         return debugInfo(e.parameter.technician, e.parameter.date);
   return json({ error: 'Unknown action' });
 }
 
 // ── Lookup ────────────────────────────────────────────────────────────────────
 
 // GET ?action=lookup&phone=7135551234
-// Returns { found, firstName, lastName, email, points, pointsToFree, freeReward }
+// Returns { found, firstName, lastName, email, points, pointsToFree, freeReward,
+//           totalVisits, lastVisit, notes, birthday }
 function lookupPhone(phone) {
   const clean = String(phone || '').replace(/\D/g, '');
   if (!clean) return json({ found: false });
@@ -86,12 +91,17 @@ function lookupPhone(phone) {
       const pointsToFree = Math.max(0, FREE_PEDICURE_POINTS - points);
       return json({
         found:        true,
+        phone:        rows[i][0],
         firstName:    rows[i][1],
         lastName:     rows[i][2],
         email:        rows[i][3],
         points:       points,
         pointsToFree: pointsToFree,
         freeReward:   points >= FREE_PEDICURE_POINTS,
+        totalVisits:  parseInt(rows[i][5], 10) || 0,
+        lastVisit:    rows[i][6] || '',
+        notes:        rows[i][7] || '',
+        birthday:     rows[i][8] || '',
       });
     }
   }
@@ -635,8 +645,107 @@ function ensureApptHeader(sheet) {
 
 function ensureCustomerHeader(sheet) {
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['Phone','First Name','Last Name','Email','Total Points','Total Visits','Last Visit']);
+    sheet.appendRow(['Phone','First Name','Last Name','Email','Total Points','Total Visits','Last Visit','Notes','Birthday']);
+    return;
   }
+  // Add Notes / Birthday headers to existing sheets if not already present
+  const lastCol = sheet.getLastColumn();
+  const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  if (!headers.includes('Notes'))    sheet.getRange(1, 8).setValue('Notes');
+  if (!headers.includes('Birthday')) sheet.getRange(1, 9).setValue('Birthday');
+}
+
+// ── Client history ────────────────────────────────────────────────────────────
+
+// GET ?action=history&phone=7135551234
+// Returns all appointment rows for this phone, newest first.
+function getClientHistory(phone) {
+  const clean = String(phone || '').replace(/\D/g, '');
+  if (!clean) return json({ appointments: [] });
+
+  const sheet = getSheet(APPT_TAB);
+  const rows  = sheet.getDataRange().getDisplayValues();
+  const appts = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).replace(/\D/g, '') !== clean) continue;
+    appts.push({
+      date:       rows[i][3],
+      technician: rows[i][4],
+      time:       rows[i][5],
+      services:   rows[i][6],
+      points:     rows[i][8],
+      status:     rows[i][10] || 'pending',
+    });
+  }
+
+  appts.sort(function(a, b) { return b.date > a.date ? 1 : -1; });
+  return json({ appointments: appts });
+}
+
+// ── Save note ─────────────────────────────────────────────────────────────────
+
+// GET ?action=savenote&phone=7135551234&note=Allergic+to+acetone
+function saveClientNote(phone, note) {
+  const clean = String(phone || '').replace(/\D/g, '');
+  if (!clean) return json({ success: false });
+
+  const sheet = getSheet(CUSTOMER_TAB);
+  ensureCustomerHeader(sheet);
+  const rows  = sheet.getDataRange().getDisplayValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).replace(/\D/g, '') === clean) {
+      sheet.getRange(i + 1, 8).setValue(note || '');
+      return json({ success: true });
+    }
+  }
+  return json({ success: false, error: 'Client not found' });
+}
+
+// ── Save birthday ─────────────────────────────────────────────────────────────
+
+// GET ?action=savebirthday&phone=7135551234&birthday=1990-06-15
+function saveClientBirthday(phone, birthday) {
+  const clean = String(phone || '').replace(/\D/g, '');
+  if (!clean) return json({ success: false });
+
+  const sheet = getSheet(CUSTOMER_TAB);
+  ensureCustomerHeader(sheet);
+  const rows  = sheet.getDataRange().getDisplayValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).replace(/\D/g, '') === clean) {
+      sheet.getRange(i + 1, 9).setValue(birthday || '');
+      return json({ success: true });
+    }
+  }
+  return json({ success: false, error: 'Client not found' });
+}
+
+// ── Update client ─────────────────────────────────────────────────────────────
+
+// GET ?action=updateclient&phone=&firstName=&lastName=&email=&newPhone=
+function updateClient(params) {
+  const clean = String(params.phone || '').replace(/\D/g, '');
+  if (!clean) return json({ success: false });
+
+  const sheet = getSheet(CUSTOMER_TAB);
+  ensureCustomerHeader(sheet);
+  const rows  = sheet.getDataRange().getDisplayValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).replace(/\D/g, '') !== clean) continue;
+    if (params.firstName !== undefined) sheet.getRange(i + 1, 2).setValue(params.firstName);
+    if (params.lastName  !== undefined) sheet.getRange(i + 1, 3).setValue(params.lastName);
+    if (params.email     !== undefined) sheet.getRange(i + 1, 4).setValue(params.email);
+    if (params.newPhone) {
+      const newClean = String(params.newPhone).replace(/\D/g, '');
+      if (newClean) sheet.getRange(i + 1, 1).setValue(newClean);
+    }
+    return json({ success: true });
+  }
+  return json({ success: false, error: 'Client not found' });
 }
 
 function ensureReminderHeader(sheet) {
